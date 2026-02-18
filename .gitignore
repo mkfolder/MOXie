@@ -1,2 +1,8 @@
+# dev docker compose volumes
+volumes/
+
+# OS specific
 .DS_Store
 
+# Envs
+.env

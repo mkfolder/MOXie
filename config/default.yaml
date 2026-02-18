@@ -1,0 +1,9 @@
+server:
+  environment: development
+  port: 7654
+
+postgres:
+  dsn: postgres://cynero_owner:passwd@postgres:5432/cynero?sslmode=require
+
+http:
+  timeout: 5s
