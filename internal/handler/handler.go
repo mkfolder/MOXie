@@ -76,12 +76,10 @@ func (h *Handler) HeliusWebhook(c fiber.Ctx) error {
 }
 
 func (h *Handler) SubscribeHeliusWebhook(c fiber.Ctx) error {
-	type requestBody struct {
-		URL     string `json:"url"`
-		Address string `json:"address"`
+	var body struct {
+		URL       string   `json:"url"`
+		Addresses []string `json:"addresses"` // this should be addresses of particular user
 	}
-
-	var body requestBody
 
 	if err := json.Unmarshal(c.Body(), &body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
@@ -92,7 +90,7 @@ func (h *Handler) SubscribeHeliusWebhook(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	if err := h.s.CreateWebhook(c.Context(), url, body.Address); err != nil {
+	if err := h.s.CreateWebhook(c.Context(), url, body.Addresses); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 

@@ -71,7 +71,7 @@ func (hc *HeliusClient) GetTransactions(ctx context.Context, address string) ([]
 	return body, nil
 }
 
-func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, address string) error {
+func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, addresses []string) error {
 	client := http.New(nil, nil, time.Second*10)
 
 	url := fmt.Sprintf(
@@ -85,9 +85,9 @@ func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, 
 		nil,
 		map[string]any{
 			"transactionTypes": []string{"TRANSFER"},
-			"accountAddresses": []string{address},
+			"accountAddresses": addresses,
 			"webhookURL":       webhookURL.String(),
-			"webhookType":      "enhanced",
+			"webhookType":      HeliusWebhookTypeEnhanced,
 		},
 	)
 

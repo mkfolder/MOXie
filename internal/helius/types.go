@@ -68,3 +68,14 @@ type Transaction struct {
 	Events           json.RawMessage   `json:"events"`
 	AccountData      []AccountData     `json:"accountData"`
 }
+
+type HeliusWebhookType string
+
+const (
+	HeliusWebhookTypeEnhanced       HeliusWebhookType = "enhanced"
+	HeliusWebhookTypeRaw            HeliusWebhookType = "raw"
+	HeliusWebhookTypeDiscord        HeliusWebhookType = "discord"
+	HeliusWebhookTypeEnhancedDevnet HeliusWebhookType = "enhancedDevnet"
+	HeliusWebhookTypeRawDevnet      HeliusWebhookType = "rawDevnet"
+	HeliusWebhookTypeDiscordDevnet  HeliusWebhookType = "discordDevnet"
+)

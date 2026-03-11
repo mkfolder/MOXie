@@ -76,6 +76,6 @@ func (s *Service) DeleteOrdersBefore(ctx context.Context, before time.Time) erro
 	return s.db.WithContext(ctx).Delete(&models.Order{}, "created_at < ?", before).Error
 }
 
-func (s *Service) CreateWebhook(ctx context.Context, webhookURL *url.URL, address string) error {
-	return s.hc.CreateWebhook(ctx, webhookURL, address)
+func (s *Service) CreateWebhook(ctx context.Context, webhookURL *url.URL, addresses []string) error {
+	return s.hc.CreateWebhook(ctx, webhookURL, addresses)
 }
