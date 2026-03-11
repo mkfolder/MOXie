@@ -17,14 +17,15 @@ func NewGormRepository[T any](db *gorm.DB) *GormRepository[T] {
 
 func (r *GormRepository[T]) Find(ctx context.Context, id uuid.UUID) (*T, error) {
 	var t T
-	err := r.db.WithContext(ctx).First(&t, "id = ?", id).Error
-	return &t, err
+	return &t, r.db.WithContext(ctx).First(&t, "id = ?", id).Error
 }
 
-func (r *GormRepository[T]) FindAll(ctx context.Context) ([]T, error) {
+func (r *GormRepository[T]) FindAll(ctx context.Context, order any) ([]T, error) {
 	var ts []T
-	err := r.db.WithContext(ctx).Find(&ts).Error
-	return ts, err
+	if order == nil {
+		order = "created_at DESC"
+	}
+	return ts, r.db.WithContext(ctx).Find(&ts).Order(order).Error
 }
 
 func (r *GormRepository[T]) Create(ctx context.Context, t *T) error {

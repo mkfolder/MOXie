@@ -1,5 +1,5 @@
-SRC=./cmd/main.go
-MIGRATION=./cmd/migrate.go
+SRC=./cmd/server/main.go
+MIGRATION=./cmd/migration/migrate.go
 
 build:
 	@go build -o cynero $(SRC)
@@ -14,13 +14,14 @@ migrate:
 compose:
 	@docker compose up -d
 
-recompose:
-	@docker compose down
-	@docker image rm cynero-cynero
-	@rm -rf ./volumes/postgres_data
-	@docker compose up -d
-
 update:
 	@docker compose up -d --build cynero
 
-.PHONY: build run migrate
+clean:
+	@docker compose down
+	@docker image rm cynero-cynero
+	@rm -rf ./volumes/postgres_data
+
+recompose: clean compose
+
+.PHONY: build run clean recompose migrate

@@ -1,16 +1,19 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/Makefolder/cynero/internal/config"
 	"github.com/Makefolder/cynero/internal/handler"
 	"github.com/Makefolder/cynero/internal/log"
 	"github.com/Makefolder/cynero/internal/routes"
 	"github.com/Makefolder/cynero/internal/service"
+	"github.com/Makefolder/cynero/internal/workers"
 	"github.com/Makefolder/cynero/pkg/http"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
@@ -43,7 +46,8 @@ func main() {
 
 	// DB init
 	db, err := gorm.Open(postgres.Open(cfg.Postgres.DSN), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Error),
+		Logger:  logger.Default.LogMode(logger.Error),
+		NowFunc: func() time.Time { return time.Now().UTC() },
 	})
 	if err != nil {
 		panic(err)
@@ -63,15 +67,33 @@ func main() {
 	h := handler.New(s)
 	routes.Setup(api, h)
 
-	if err := app.Listen(fmt.Sprintf("0.0.0.0:%s", cfg.Server.Port)); err != nil {
+	go func() {
+		if err := s.PingDB(context.Background()); err != nil {
+			log.Fatal(err)
+		}
+
+		if err := app.Listen(fmt.Sprintf("0.0.0.0:%s", cfg.Server.Port)); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	// Workers init
+	cw := workers.NewCleanerWorker(log, cfg.Workers.CleanerInterval, cfg.Workers.OrderExpiration, s)
+
+	if err := cw.Start(); err != nil {
 		log.Fatal(err)
 	}
+
+	defer func() {
+		cw.Stop()
+	}()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 
 	<-c
 	log.Infoln("Gracefully shutting down...")
+
 	if err := app.Shutdown(); err != nil {
 		log.Fatal(err)
 	}

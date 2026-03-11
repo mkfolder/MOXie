@@ -48,6 +48,7 @@ func (h *Handler) FindAll(c fiber.Ctx) error {
 
 func (h *Handler) CreateOrder(c fiber.Ctx) error {
 	var requestBody struct {
+		Address    string          `json:"address"`
 		RawAmount  uint64          `json:"raw_amount"`
 		CustomData json.RawMessage `json:"custom_data"`
 	}
@@ -56,10 +57,19 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	payment, err := h.s.CreateOrder(c.Context(), requestBody.RawAmount, requestBody.CustomData)
+	payment, err := h.s.CreateOrder(
+		c.Context(),
+		requestBody.Address,
+		requestBody.RawAmount,
+		requestBody.CustomData,
+	)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	return c.JSON(payment)
+}
+
+func (h *Handler) HeliusWebhook(c fiber.Ctx) error {
+	return c.JSON(fiber.Map{"status": "ok"})
 }

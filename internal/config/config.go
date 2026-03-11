@@ -15,6 +15,7 @@ type Config struct {
 	Server   Server   `yaml:"server"`
 	Postgres Postgres `yaml:"postgres"`
 	HTTP     HTTP     `yaml:"http"`
+	Workers  Workers  `yaml:"workers"`
 }
 
 type Server struct {
@@ -28,6 +29,12 @@ type Postgres struct {
 
 type HTTP struct {
 	Timeout time.Duration `yaml:"timeout" env:"HTTP_TIMEOUT"`
+}
+
+type Workers struct {
+	PaymentInterval time.Duration `yaml:"payment_interval" env:"PAYMENT_INTERVAL"`
+	CleanerInterval time.Duration `yaml:"cleaner_interval" env:"CLEANER_INTERVAL"`
+	OrderExpiration time.Duration `yaml:"order_expiration" env:"ORDER_EXPIRATION"`
 }
 
 func New(path string) (*Config, error) {

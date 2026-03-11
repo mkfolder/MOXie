@@ -16,8 +16,8 @@ type BaseModel struct {
 type Order struct {
 	BaseModel
 	Address    string          `json:"address"`
-	Memo       string          `json:"memo"`
-	IsPaid     bool            `json:"is_paid" gorm:"default:false"`
+	Memo       string          `json:"-"`
+	TxHash     *string         `json:"tx_hash" gorm:"default:null"`
 	RawAmount  uint64          `json:"raw_amount"`
 	CustomData json.RawMessage `json:"custom_data" gorm:"type:jsonb;not null"`
 }

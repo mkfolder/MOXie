@@ -8,7 +8,7 @@ import (
 
 type Repository[T any] interface {
 	Find(ctx context.Context, id uuid.UUID) (*T, error)
-	FindAll(ctx context.Context) ([]T, error)
+	FindAll(ctx context.Context, order any) ([]T, error)
 	Create(ctx context.Context, t *T) error
 	Update(ctx context.Context, t *T) error
 	Delete(ctx context.Context, id uuid.UUID) error

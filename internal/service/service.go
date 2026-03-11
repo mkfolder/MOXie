@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/Makefolder/cynero/internal/db"
 	"github.com/Makefolder/cynero/internal/models"
@@ -34,17 +35,26 @@ func (s *Service) PingDB(ctx context.Context) error {
 }
 
 func (s *Service) FindAll(ctx context.Context) ([]models.Order, error) {
-	return s.orders.FindAll(ctx)
+	orders, err := s.orders.FindAll(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find all orders: %w", err)
+	}
+
+	for idx := range orders {
+		orders[idx].Memo = orders[idx].ID.String()
+	}
+
+	return orders, nil
 }
 
 func (s *Service) CreateOrder(
 	ctx context.Context,
+	address string,
 	rawAmount uint64,
 	customData json.RawMessage,
 ) (*models.Order, error) {
 	o := models.Order{
-		Address:    "test.merchant_solana_address",
-		Memo:       "test",
+		Address:    address,
 		RawAmount:  rawAmount,
 		CustomData: customData,
 	}
@@ -53,5 +63,15 @@ func (s *Service) CreateOrder(
 		return nil, fmt.Errorf("failed to create new order record: %w", err)
 	}
 
+	o.Memo = o.ID.String()
 	return &o, nil
+}
+
+func (s *Service) CountOrdersBefore(ctx context.Context, before time.Time) (int64, error) {
+	var c int64
+	return c, s.db.WithContext(ctx).Model(&models.Order{}).Count(&c).Where("created_at < ?", before).Error
+}
+
+func (s *Service) DeleteOrdersBefore(ctx context.Context, before time.Time) error {
+	return s.db.WithContext(ctx).Delete(&models.Order{}, "created_at < ?", before).Error
 }
