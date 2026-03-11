@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"net/url"
 	"time"
 
 	"github.com/Makefolder/cynero/internal/service"
@@ -71,5 +72,29 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 }
 
 func (h *Handler) HeliusWebhook(c fiber.Ctx) error {
+	return c.JSON(fiber.Map{"status": "ok"})
+}
+
+func (h *Handler) SubscribeHeliusWebhook(c fiber.Ctx) error {
+	type requestBody struct {
+		URL     string `json:"url"`
+		Address string `json:"address"`
+	}
+
+	var body requestBody
+
+	if err := json.Unmarshal(c.Body(), &body); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	url, err := url.Parse(body.URL)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if err := h.s.CreateWebhook(c.Context(), url, body.Address); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
 	return c.JSON(fiber.Map{"status": "ok"})
 }

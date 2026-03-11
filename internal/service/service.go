@@ -4,27 +4,27 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/Makefolder/cynero/internal/db"
+	"github.com/Makefolder/cynero/internal/helius"
 	"github.com/Makefolder/cynero/internal/models"
-	"github.com/Makefolder/cynero/pkg/http"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
 type Service struct {
 	log    *zap.SugaredLogger
-	http   *http.Client
 	db     *gorm.DB
+	hc     *helius.HeliusClient
 	orders db.Repository[models.Order]
 }
 
-func New(log *zap.SugaredLogger, client *http.Client, gormDB *gorm.DB) *Service {
+func New(log *zap.SugaredLogger, hc *helius.HeliusClient, gormDB *gorm.DB) *Service {
 	ordersRepository := db.NewGormRepository[models.Order](gormDB)
 	return &Service{
 		log:    log,
-		http:   client,
 		db:     gormDB,
 		orders: ordersRepository,
 	}
@@ -74,4 +74,8 @@ func (s *Service) CountOrdersBefore(ctx context.Context, before time.Time) (int6
 
 func (s *Service) DeleteOrdersBefore(ctx context.Context, before time.Time) error {
 	return s.db.WithContext(ctx).Delete(&models.Order{}, "created_at < ?", before).Error
+}
+
+func (s *Service) CreateWebhook(ctx context.Context, webhookURL *url.URL, address string) error {
+	return s.hc.CreateWebhook(ctx, webhookURL, address)
 }

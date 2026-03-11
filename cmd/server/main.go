@@ -10,6 +10,7 @@ import (
 
 	"github.com/Makefolder/cynero/internal/config"
 	"github.com/Makefolder/cynero/internal/handler"
+	"github.com/Makefolder/cynero/internal/helius"
 	"github.com/Makefolder/cynero/internal/log"
 	"github.com/Makefolder/cynero/internal/routes"
 	"github.com/Makefolder/cynero/internal/service"
@@ -23,7 +24,9 @@ import (
 )
 
 const (
-	defaultPath string = "./config/default.yaml"
+	defaultPath string           = "./config/default.yaml"
+	apiKey      string           = "569dbc7b-d716-4219-aa73-7580f65b3011"
+	heliusNet   helius.HeliusNet = helius.HeliusNetMainnet
 )
 
 func main() {
@@ -63,7 +66,8 @@ func main() {
 	api := app.Group("/api").Use(cors.New())
 
 	httpClient := http.New(nil, nil, cfg.HTTP.Timeout)
-	s := service.New(log, httpClient, db)
+	hc := helius.NewClient(httpClient, apiKey, heliusNet)
+	s := service.New(log, hc, db)
 	h := handler.New(s)
 	routes.Setup(api, h)
 
