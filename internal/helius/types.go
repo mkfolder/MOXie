@@ -61,12 +61,12 @@ type Transaction struct {
 	Signature        string            `json:"signature"`
 	Slot             int               `json:"slot"`
 	Timestamp        int               `json:"timestamp"`
+	AccountData      []AccountData     `json:"accountData"`
 	NativeTransfers  []NativeTransfer  `json:"nativeTransfers"`
 	TokenTransfers   []TokenTransfer   `json:"tokenTransfers"`
-	TransactionError *TransactionError `json:"transactionError"`
 	Instructions     []Instruction     `json:"instructions"`
+	TransactionError *TransactionError `json:"transactionError"`
 	Events           json.RawMessage   `json:"events"`
-	AccountData      []AccountData     `json:"accountData"`
 }
 
 type HeliusWebhookType string

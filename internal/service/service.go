@@ -10,9 +10,12 @@ import (
 	"github.com/Makefolder/cynero/internal/db"
 	"github.com/Makefolder/cynero/internal/helius"
 	"github.com/Makefolder/cynero/internal/models"
+	"github.com/mr-tron/base58/base58"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
+
+const memoProgramID = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 
 type Service struct {
 	log    *zap.SugaredLogger
@@ -27,6 +30,7 @@ func New(log *zap.SugaredLogger, hc *helius.HeliusClient, gormDB *gorm.DB) *Serv
 		log:    log,
 		db:     gormDB,
 		orders: ordersRepository,
+		hc:     hc,
 	}
 }
 
@@ -78,4 +82,29 @@ func (s *Service) DeleteOrdersBefore(ctx context.Context, before time.Time) erro
 
 func (s *Service) CreateWebhook(ctx context.Context, webhookURL *url.URL, addresses []string) error {
 	return s.hc.CreateWebhook(ctx, webhookURL, addresses)
+}
+
+func (s *Service) HandleWebhook(ctx context.Context, body []byte) {
+	var transacitons []helius.Transaction
+	s.log.Debugf("request body: %s", string(body))
+
+	if err := json.Unmarshal(body, &transacitons); err != nil {
+		s.log.Errorf("failed to unmarshal body: %v", err)
+	}
+
+	for _, tx := range transacitons {
+		for _, instruction := range tx.Instructions {
+			if instruction.ProgramID == memoProgramID {
+				b, err := base58.Decode(instruction.Data)
+
+				if err != nil {
+					s.log.Errorf("failed to decode base58 data of memo program: %v", err)
+					break
+				}
+
+				s.log.Debug("tx:\t%s\ndata:\t%s", tx.Signature, string(b))
+				break
+			}
+		}
+	}
 }

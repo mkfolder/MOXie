@@ -72,17 +72,22 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 }
 
 func (h *Handler) HeliusWebhook(c fiber.Ctx) error {
+	h.s.HandleWebhook(c.Context(), c.Body())
 	return c.JSON(fiber.Map{"status": "ok"})
 }
 
 func (h *Handler) SubscribeHeliusWebhook(c fiber.Ctx) error {
 	var body struct {
 		URL       string   `json:"url"`
-		Addresses []string `json:"addresses"` // this should be addresses of particular user
+		Addresses []string `json:"addresses"` // this should be addresses of a particular user
 	}
 
 	if err := json.Unmarshal(c.Body(), &body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if len(body.Addresses) == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid addresses array"})
 	}
 
 	url, err := url.Parse(body.URL)

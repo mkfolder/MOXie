@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/url"
-	"time"
 
 	"github.com/Makefolder/cynero/pkg/http"
 )
@@ -72,14 +71,12 @@ func (hc *HeliusClient) GetTransactions(ctx context.Context, address string) ([]
 }
 
 func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, addresses []string) error {
-	client := http.New(nil, nil, time.Second*10)
-
 	url := fmt.Sprintf(
 		"https://%s/v0/webhooks?api-key=%s",
 		hc.domain, hc.apiKey,
 	)
 
-	res, err := client.Post(
+	res, err := hc.http.Post(
 		ctx,
 		url,
 		nil,
@@ -100,5 +97,11 @@ func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, 
 		return err
 	}
 
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil
+	}
+
+	fmt.Printf("create webhook response: %s", string(b))
 	return nil
 }
