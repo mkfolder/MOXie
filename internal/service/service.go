@@ -10,6 +10,7 @@ import (
 	"github.com/Makefolder/cynero/internal/db"
 	"github.com/Makefolder/cynero/internal/helius"
 	"github.com/Makefolder/cynero/internal/models"
+	"github.com/google/uuid"
 	"github.com/mr-tron/base58/base58"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -67,7 +68,6 @@ func (s *Service) CreateOrder(
 		return nil, fmt.Errorf("failed to create new order record: %w", err)
 	}
 
-	o.Memo = o.ID.String()
 	return &o, nil
 }
 
@@ -93,18 +93,78 @@ func (s *Service) HandleWebhook(ctx context.Context, body []byte) {
 	}
 
 	for _, tx := range transacitons {
-		for _, instruction := range tx.Instructions {
-			if instruction.ProgramID == memoProgramID {
-				b, err := base58.Decode(instruction.Data)
+		go s.processTransaction(&tx)
+	}
+}
 
-				if err != nil {
-					s.log.Errorf("failed to decode base58 data of memo program: %v", err)
-					break
-				}
-
-				s.log.Debug("tx:\t%s\ndata:\t%s", tx.Signature, string(b))
+func (s *Service) processTransaction(tx *helius.Transaction) {
+	for _, instruction := range tx.Instructions {
+		if instruction.ProgramID == memoProgramID {
+			// helius returns any data as base58
+			b, err := base58.Decode(instruction.Data)
+			if err != nil {
+				s.log.Errorf("failed to decode base58 data of memo program: %v", err)
 				break
 			}
+
+			// order id is encoded into base58 by us
+			orderID, err := base58.Decode(string(b))
+			if err != nil {
+				s.log.Errorf("failed to decode base58 order id: %v", err)
+				break
+			}
+
+			uid, err := uuid.Parse(string(orderID))
+			if err != nil {
+				s.log.Errorf("failed to parse order uuid: %v", err)
+				break
+			}
+
+			s.log.Debug("tx:\t%s\ndata:\t%s", tx.Signature, string(b))
+			go s.processOrder(uid, tx)
+			break
 		}
+	}
+}
+
+func (s *Service) processOrder(orderID uuid.UUID, tx *helius.Transaction) {
+	var paidAmount uint64
+
+	order, err := s.orders.Find(context.Background(), orderID)
+	if err != nil {
+		s.log.Errorf("failed to find order with id %s: %v", orderID.String(), err)
+		return
+	}
+
+	for _, account := range tx.AccountData {
+		if account.Account != order.Address {
+			continue
+		}
+
+		if account.NativeBalanceChange < 0 {
+			s.log.Errorf(
+				"transaction %s has negative balance change: %d",
+				tx.Signature, account.NativeBalanceChange)
+			return
+		}
+
+		paidAmount = uint64(account.NativeBalanceChange)
+		break
+	}
+
+	if paidAmount < order.RawAmount {
+		s.log.Errorf(
+			"transaction %s has insufficient balance change (expected at least: %d): %d",
+			tx.Signature, order.RawAmount, paidAmount)
+		return
+	}
+
+	paidAt := time.Unix(int64(tx.Timestamp), 0).UTC()
+
+	order.RawPaidAmount = &paidAmount
+	order.PaidAt = &paidAt
+
+	if err := s.orders.Update(context.Background(), order); err != nil {
+		s.log.Errorf("failed to update order with id %s: %v", orderID.String(), err)
 	}
 }

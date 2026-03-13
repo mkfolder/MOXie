@@ -72,7 +72,7 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 }
 
 func (h *Handler) HeliusWebhook(c fiber.Ctx) error {
-	h.s.HandleWebhook(c.Context(), c.Body())
+	go h.s.HandleWebhook(c.Context(), c.Body())
 	return c.JSON(fiber.Map{"status": "ok"})
 }
 
