@@ -41,6 +41,8 @@ func main() {
 		panic(err)
 	}
 
+	webhookURL := cfg.Server.WebhookURL
+
 	// Log init
 	log, err := log.New(cfg.Server.Environment)
 	if err != nil {
@@ -48,7 +50,7 @@ func main() {
 	}
 
 	// DB init
-	db, err := gorm.Open(postgres.Open(cfg.Postgres.DSN), &gorm.Config{
+	gormDB, err := gorm.Open(postgres.Open(cfg.Postgres.DSN), &gorm.Config{
 		Logger:  logger.Default.LogMode(logger.Error),
 		NowFunc: func() time.Time { return time.Now().UTC() },
 	})
@@ -67,7 +69,16 @@ func main() {
 
 	httpClient := http.New(nil, nil, cfg.HTTP.Timeout)
 	hc := helius.NewClient(httpClient, apiKey, heliusNet)
-	s := service.New(log, hc, db)
+
+	params := service.NewServiceParams{
+		Log:        log,
+		HTTP:       httpClient,
+		HC:         hc,
+		WebhookURL: webhookURL,
+		GormDB:     gormDB,
+	}
+
+	s := service.New(params)
 	h := handler.New(s)
 	routes.Setup(api, h)
 

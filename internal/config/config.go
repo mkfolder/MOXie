@@ -21,6 +21,7 @@ type Config struct {
 type Server struct {
 	Environment common.Environment `yaml:"environment" env:"ENVIRONMENT"`
 	Port        string             `yaml:"port" env:"SERVER_PORT"`
+	WebhookURL  string             `yaml:"webhook_url" env:"WEBHOOK_URL"`
 }
 
 type Postgres struct {
@@ -32,7 +33,6 @@ type HTTP struct {
 }
 
 type Workers struct {
-	PaymentInterval time.Duration `yaml:"payment_interval" env:"PAYMENT_INTERVAL"`
 	CleanerInterval time.Duration `yaml:"cleaner_interval" env:"CLEANER_INTERVAL"`
 	OrderExpiration time.Duration `yaml:"order_expiration" env:"ORDER_EXPIRATION"`
 }
@@ -54,6 +54,22 @@ func New(path string) (*Config, error) {
 
 	if !config.Server.Environment.IsProduction() && !config.Server.Environment.IsDevelopment() {
 		return nil, errors.New("invalid environment")
+	}
+
+	if config.Server.Port == "" {
+		return nil, errors.New("invalid server port")
+	}
+
+	if config.Server.WebhookURL == "" {
+		return nil, errors.New("invalid webhook url")
+	}
+
+	if config.Postgres.DSN == "" {
+		return nil, errors.New("invalid postgres dsn")
+	}
+
+	if config.HTTP.Timeout == 0 {
+		return nil, errors.New("invalid http timeout")
 	}
 
 	return &config, nil

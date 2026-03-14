@@ -32,7 +32,7 @@ services:
       - POSTGRES_PASSWORD=passwd
       - POSTGRES_DB=cynero
     volumes:
-      - ./volumes/postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U cynero_owner -d cynero"]
       interval: 10s
@@ -51,9 +51,23 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./volumes/pgadmin_data:/var/lib/pgadmin
+      - pgadmin_data:/var/lib/pgadmin
     networks:
       - cynero-net
+
+volumes:
+  postgres_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volumes/postgres_data
+  pgadmin_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volumes/pgadmin_data
 
 networks:
   cynero-net:

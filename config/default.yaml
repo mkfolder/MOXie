@@ -9,6 +9,5 @@ http:
   timeout: 5s
 
 workers:
-  payment_interval: 5s
   cleaner_interval: 30m
   order_expiration: 24h

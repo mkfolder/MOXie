@@ -21,6 +21,7 @@ clean:
 	@docker compose down
 	@docker image rm cynero-cynero
 	@rm -rf ./volumes/postgres_data
+	@mkdir -p ./volumes/postgres_data
 
 recompose: clean compose
 

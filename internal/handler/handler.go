@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
-	"net/url"
 	"time"
 
 	"github.com/Makefolder/cynero/internal/service"
@@ -37,67 +35,4 @@ func (h *Handler) Health(c fiber.Ctx) error {
 		"uptime": uptime,
 		"db":     dbStatus,
 	})
-}
-
-func (h *Handler) FindAll(c fiber.Ctx) error {
-	orders, err := h.s.FindAll(c.Context())
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-	return c.JSON(orders)
-}
-
-func (h *Handler) CreateOrder(c fiber.Ctx) error {
-	var requestBody struct {
-		Address    string          `json:"address"`
-		RawAmount  uint64          `json:"raw_amount"`
-		CustomData json.RawMessage `json:"custom_data"`
-	}
-
-	if err := json.Unmarshal(c.Body(), &requestBody); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	payment, err := h.s.CreateOrder(
-		c.Context(),
-		requestBody.Address,
-		requestBody.RawAmount,
-		requestBody.CustomData,
-	)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	return c.JSON(payment)
-}
-
-func (h *Handler) HeliusWebhook(c fiber.Ctx) error {
-	go h.s.HandleWebhook(c.Context(), c.Body())
-	return c.JSON(fiber.Map{"status": "ok"})
-}
-
-func (h *Handler) SubscribeHeliusWebhook(c fiber.Ctx) error {
-	var body struct {
-		URL       string   `json:"url"`
-		Addresses []string `json:"addresses"` // this should be addresses of a particular user
-	}
-
-	if err := json.Unmarshal(c.Body(), &body); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	if len(body.Addresses) == 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid addresses array"})
-	}
-
-	url, err := url.Parse(body.URL)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	if err := h.s.CreateWebhook(c.Context(), url, body.Addresses); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
-	}
-
-	return c.JSON(fiber.Map{"status": "ok"})
 }
