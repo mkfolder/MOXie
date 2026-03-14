@@ -68,14 +68,13 @@ func main() {
 	api := app.Group("/api").Use(cors.New())
 
 	httpClient := http.New(nil, nil, cfg.HTTP.Timeout)
-	hc := helius.NewClient(httpClient, apiKey, heliusNet)
+	hc := helius.NewClient(httpClient, webhookURL, apiKey, heliusNet)
 
 	params := service.NewServiceParams{
-		Log:        log,
-		HTTP:       httpClient,
-		HC:         hc,
-		WebhookURL: webhookURL,
-		GormDB:     gormDB,
+		Log:    log,
+		HTTP:   httpClient,
+		HC:     hc,
+		GormDB: gormDB,
 	}
 
 	s := service.New(params)

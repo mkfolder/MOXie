@@ -58,18 +58,10 @@ func (cw *CleanerWorker) run() {
 
 func (cw *CleanerWorker) work() {
 	before := time.Now().UTC().Add(-cw.expirationTime)
-	c, err := cw.s.CountOrdersBefore(cw.ctx, before)
+	affected, err := cw.s.DeleteOrdersBefore(cw.ctx, before)
 	if err != nil {
-		cw.log.Errorw("failed to count orders", "error", err)
-		return
-	}
-	if c == 0 {
-		cw.log.Info("no expired orders found")
-		return
-	}
-	if err := cw.s.DeleteOrdersBefore(cw.ctx, before); err != nil {
 		cw.log.Errorw("failed to delete orders", "error", err)
 		return
 	}
-	cw.log.Infof("deleted orders %d", c)
+	cw.log.Infof("deleted orders %d", affected)
 }

@@ -18,21 +18,28 @@ const (
 )
 
 type HeliusClient struct {
-	http   *http.Client
-	apiKey string
-	domain string
+	http       *http.Client
+	webhookURL *url.URL
+	apiKey     string
+	domain     string
 }
 
-func NewClient(http *http.Client, apiKey string, net HeliusNet) *HeliusClient {
+func NewClient(http *http.Client, webhookURL, apiKey string, net HeliusNet) *HeliusClient {
 	domain := "api-mainnet.helius-rpc.com"
 	if net == HeliusNetDevnet {
 		domain = "api-devnet.helius-rpc.com"
 	}
 
+	webhook, err := url.Parse(webhookURL)
+	if err != nil {
+		panic(fmt.Sprintf("failed to parse webhook url: %v", err))
+	}
+
 	return &HeliusClient{
-		http:   http,
-		apiKey: apiKey,
-		domain: domain,
+		http:       http,
+		apiKey:     apiKey,
+		domain:     domain,
+		webhookURL: webhook,
 	}
 }
 
@@ -70,7 +77,7 @@ func (hc *HeliusClient) GetTransactions(ctx context.Context, address string) ([]
 	return body, nil
 }
 
-func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, addresses []string) error {
+func (hc *HeliusClient) CreateWebhook(ctx context.Context, addresses []string) error {
 	url := fmt.Sprintf(
 		"https://%s/v0/webhooks?api-key=%s",
 		hc.domain, hc.apiKey,
@@ -83,7 +90,7 @@ func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, 
 		map[string]any{
 			"transactionTypes": []string{"TRANSFER"},
 			"accountAddresses": addresses,
-			"webhookURL":       webhookURL.String(),
+			"webhookURL":       hc.webhookURL.String(),
 			"webhookType":      HeliusWebhookTypeEnhanced,
 		},
 	)
@@ -97,11 +104,5 @@ func (hc *HeliusClient) CreateWebhook(ctx context.Context, webhookURL *url.URL, 
 		return err
 	}
 
-	b, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil
-	}
-
-	fmt.Printf("create webhook response: %s", string(b))
 	return nil
 }

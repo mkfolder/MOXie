@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
-	"net/url"
 
 	"github.com/Makefolder/cynero/internal/db"
 	"github.com/Makefolder/cynero/internal/helius"
@@ -16,21 +14,19 @@ import (
 const memoProgramID = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 
 type Service struct {
-	log        *zap.SugaredLogger
-	db         *gorm.DB
-	hc         *helius.HeliusClient
-	http       *http.Client
-	webhookURL *url.URL
-	orders     db.Repository[models.Order]
-	merchants  db.Repository[models.Merchant]
+	log       *zap.SugaredLogger
+	db        *gorm.DB
+	hc        *helius.HeliusClient
+	http      *http.Client
+	orders    db.Repository[models.Order]
+	merchants db.Repository[models.Merchant]
 }
 
 type NewServiceParams struct {
-	Log        *zap.SugaredLogger
-	WebhookURL string
-	HC         *helius.HeliusClient
-	HTTP       *http.Client
-	GormDB     *gorm.DB
+	Log    *zap.SugaredLogger
+	HC     *helius.HeliusClient
+	HTTP   *http.Client
+	GormDB *gorm.DB
 }
 
 func New(params NewServiceParams) *Service {
@@ -46,25 +42,15 @@ func New(params NewServiceParams) *Service {
 		panic("invalid service.New arguments: gorm db is nil")
 	}
 
-	if params.WebhookURL == "" {
-		log.Fatal("invalid service.New arguments: webhook url is not set")
-	}
-
-	webhook, err := url.Parse(params.WebhookURL)
-	if err != nil {
-		log.Fatalf("failed to parse webhook url: %v", err)
-	}
-
 	ordersRepository := db.NewGormRepository[models.Order](params.GormDB)
 	merchantsRepository := db.NewGormRepository[models.Merchant](params.GormDB)
 	return &Service{
-		log:        params.Log,
-		hc:         params.HC,
-		http:       params.HTTP,
-		db:         params.GormDB,
-		webhookURL: webhook,
-		orders:     ordersRepository,
-		merchants:  merchantsRepository,
+		log:       params.Log,
+		hc:        params.HC,
+		http:      params.HTTP,
+		db:        params.GormDB,
+		orders:    ordersRepository,
+		merchants: merchantsRepository,
 	}
 }
 

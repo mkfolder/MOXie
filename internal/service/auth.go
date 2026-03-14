@@ -38,7 +38,7 @@ func (s *Service) RegisterMerchant(
 		return nil, fmt.Errorf("failed to register new merchant: %w", err)
 	}
 
-	go s.hc.CreateWebhook(ctx, s.webhookURL, []string{address})
+	go s.hc.CreateWebhook(ctx, []string{address})
 	return &merchant, nil
 }
 
@@ -53,6 +53,7 @@ func (s *Service) AuthMerchant(ctx context.Context, email, password string) (*Au
 		return nil, fmt.Errorf("invalid password")
 	}
 
+	// todo!: JWT token issuing
 	token := base58.Encode(merchant.ID[:])
 	return &AuthResponse{Token: token, Merchant: &merchant}, nil
 }
