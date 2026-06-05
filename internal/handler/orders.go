@@ -15,6 +15,19 @@ func (h *Handler) FindAll(c fiber.Ctx) error {
 	return c.JSON(orders)
 }
 
+func (h *Handler) FindOrder(c fiber.Ctx) error {
+	orderID, err := uuid.Parse(c.Params("id"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	order, err := h.s.FindOrder(c.Context(), orderID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+	return c.JSON(order)
+}
+
 func (h *Handler) CreateOrder(c fiber.Ctx) error {
 	var requestBody struct {
 		MerchantID string          `json:"merchant_id"`

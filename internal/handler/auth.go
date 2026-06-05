@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/url"
 
-	"github.com/Makefolder/cynero/internal/common"
+	"github.com/Makefolder/moxie/internal/common"
 	"github.com/gofiber/fiber/v3"
 )
 

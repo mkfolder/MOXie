@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Makefolder/cynero/internal/service"
+	"github.com/Makefolder/moxie/internal/service"
 	"go.uber.org/zap"
 )
 

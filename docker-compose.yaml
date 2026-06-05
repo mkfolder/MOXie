@@ -1,12 +1,12 @@
 services:
-  cynero:
+  moxie:
     build: .
     ports:
       - "7654:7654"
     env_file:
       - .env
     environment:
-      - DATABASE_URL=postgres://cynero_owner:passwd@postgres:5432/cynero?sslmode=disable
+      - DATABASE_URL=postgres://cynero_owner:passwd@postgres:5432/moxie?sslmode=disable
     depends_on:
       postgres:
         condition: service_healthy
@@ -23,23 +23,23 @@ services:
       retries: 5
       start_period: 30s
     networks:
-      - cynero-net
+      - moxie-net
 
   postgres:
     image: postgres:17-alpine
     environment:
       - POSTGRES_USER=cynero_owner
       - POSTGRES_PASSWORD=passwd
-      - POSTGRES_DB=cynero
+      - POSTGRES_DB=moxie
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cynero_owner -d cynero"]
+      test: ["CMD-SHELL", "pg_isready -U cynero_owner -d moxie"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - cynero-net
+      - moxie-net
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -53,7 +53,7 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     networks:
-      - cynero-net
+      - moxie-net
 
 volumes:
   postgres_data:
@@ -70,4 +70,4 @@ volumes:
       device: ./volumes/pgadmin_data
 
 networks:
-  cynero-net:
+  moxie-net:

@@ -3,7 +3,7 @@ package handler
 import (
 	"time"
 
-	"github.com/Makefolder/cynero/internal/service"
+	"github.com/Makefolder/moxie/internal/service"
 	"github.com/gofiber/fiber/v3"
 )
 

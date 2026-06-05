@@ -4,8 +4,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Makefolder/cynero/internal/config"
-	"github.com/Makefolder/cynero/internal/models"
+	"github.com/Makefolder/moxie/internal/config"
+	"github.com/Makefolder/moxie/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

@@ -2,7 +2,7 @@ SRC=./cmd/server/main.go
 MIGRATION=./cmd/migration/migrate.go
 
 build:
-	@go build -o cynero $(SRC)
+	@go build -o moxie $(SRC)
 	@go build -o migrate $(MIGRATION)
 
 run:
@@ -15,11 +15,11 @@ compose:
 	@docker compose up -d
 
 update:
-	@docker compose up -d --build cynero
+	@docker compose up -d --build moxie
 
 clean:
 	@docker compose down
-	@docker image rm cynero-cynero
+	@docker image rm moxie-moxie
 	@rm -rf ./volumes/postgres_data
 	@mkdir -p ./volumes/postgres_data
 

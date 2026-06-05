@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/Makefolder/cynero/internal/common"
+	"github.com/Makefolder/moxie/internal/common"
 	"go.uber.org/zap"
 )
 

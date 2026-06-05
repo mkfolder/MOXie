@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Makefolder/cynero/internal/models"
+	"github.com/Makefolder/moxie/internal/models"
 	"github.com/google/uuid"
 )
 
@@ -20,6 +20,14 @@ func (s *Service) FindAll(ctx context.Context) ([]models.Order, error) {
 	}
 
 	return orders, nil
+}
+
+func (s *Service) FindOrder(ctx context.Context, orderID uuid.UUID) (*models.Order, error) {
+	order, err := s.orders.Find(ctx, orderID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to find order: %w", err)
+	}
+	return order, nil
 }
 
 func (s *Service) CreateOrder(

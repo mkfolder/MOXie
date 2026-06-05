@@ -1,10 +1,10 @@
 server:
   environment: development
   port: 7654
-  webhook_url: https://api.cynero.io/helius-webhook/handle
+  webhook_url: https://api.moxie.io/helius-webhook/handle
 
 postgres:
-  dsn: postgres://cynero_owner:passwd@postgres:5432/cynero?sslmode=require
+  dsn: postgres://cynero_owner:passwd@postgres:5432/moxie?sslmode=require
 
 http:
   timeout: 5s

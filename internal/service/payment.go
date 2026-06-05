@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/Makefolder/cynero/internal/helius"
-	"github.com/Makefolder/cynero/internal/models"
-	"github.com/Makefolder/cynero/pkg/http"
+	"github.com/Makefolder/moxie/internal/helius"
+	"github.com/Makefolder/moxie/internal/models"
+	"github.com/Makefolder/moxie/pkg/http"
 	"github.com/google/uuid"
 	"github.com/mr-tron/base58/base58"
 )
@@ -19,31 +19,33 @@ func (s *Service) HandleWebhook(ctx context.Context, transacitons []helius.Trans
 
 func (s *Service) processTransaction(tx *helius.Transaction) {
 	for _, instruction := range tx.Instructions {
-		if instruction.ProgramID == memoProgramID {
-			// helius returns any data as base58
-			b, err := base58.Decode(instruction.Data)
-			if err != nil {
-				s.log.Errorf("failed to decode base58 data of memo program: %v", err)
-				break
-			}
+		if instruction.ProgramID != memoProgramID {
+			continue
+		}
 
-			// order id is encoded into base58 by us
-			orderID, err := base58.Decode(string(b))
-			if err != nil {
-				s.log.Errorf("failed to decode base58 order id: %v", err)
-				break
-			}
-
-			uid, err := uuid.Parse(string(orderID))
-			if err != nil {
-				s.log.Errorf("failed to parse order uuid: %v", err)
-				break
-			}
-
-			s.log.Debug("tx:\t%s\ndata:\t%s", tx.Signature, string(b))
-			go s.processOrder(uid, tx)
+		// helius returns any data as base58
+		b, err := base58.Decode(instruction.Data)
+		if err != nil {
+			s.log.Errorf("failed to decode base58 data of memo program: %v", err)
 			break
 		}
+
+		// order id is encoded into base58 by this API
+		orderID, err := base58.Decode(string(b))
+		if err != nil {
+			s.log.Errorf("failed to decode base58 order id: %v", err)
+			break
+		}
+
+		uid, err := uuid.Parse(string(orderID))
+		if err != nil {
+			s.log.Errorf("failed to parse order uuid: %v", err)
+			break
+		}
+
+		s.log.Debug("tx:\t%s\ndata:\t%s", tx.Signature, string(b))
+		go s.processOrder(uid, tx)
+		break
 	}
 }
 
@@ -75,7 +77,8 @@ func (s *Service) processOrder(orderID uuid.UUID, tx *helius.Transaction) {
 	// todo!: save transactions instead of fields in order
 	// !      we can sum raw paid amount by querying all "TRANSFER" transactions
 	if order.RawPaidAmount == nil {
-		order.RawPaidAmount = &paidAmount
+		order.RawPaidAmount = new(uint64)
+		*order.RawPaidAmount = paidAmount
 	} else {
 		*order.RawPaidAmount += paidAmount
 	}
@@ -92,7 +95,7 @@ func (s *Service) processOrder(orderID uuid.UUID, tx *helius.Transaction) {
 	}
 
 	if *order.RawPaidAmount < order.RawRequestedAmount {
-		s.log.Errorf(
+		s.log.Debugf(
 			"order payment %s has not been satisfied (expected at least %d, got %d)",
 			tx.Signature, order.RawRequestedAmount, *order.RawPaidAmount)
 		return

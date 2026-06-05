@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 
-	"github.com/Makefolder/cynero/internal/db"
-	"github.com/Makefolder/cynero/internal/helius"
-	"github.com/Makefolder/cynero/internal/models"
-	"github.com/Makefolder/cynero/pkg/http"
+	"github.com/Makefolder/moxie/internal/db"
+	"github.com/Makefolder/moxie/internal/helius"
+	"github.com/Makefolder/moxie/internal/models"
+	"github.com/Makefolder/moxie/pkg/http"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

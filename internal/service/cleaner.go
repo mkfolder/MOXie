@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/Makefolder/cynero/internal/models"
+	"github.com/Makefolder/moxie/internal/models"
 )
 
 func (s *Service) DeleteOrdersBefore(ctx context.Context, before time.Time) (int64, error) {

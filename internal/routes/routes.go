@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/Makefolder/cynero/internal/handler"
+	"github.com/Makefolder/moxie/internal/handler"
 	"github.com/gofiber/fiber/v3"
 )
 
@@ -10,6 +10,7 @@ func Setup(r fiber.Router, h *handler.Handler) {
 
 	orders := r.Group("/orders")
 	orders.Get("/find-all", h.FindAll)
+	orders.Get("/find/:id", h.FindOrder)
 	orders.Post("/create", h.CreateOrder)
 
 	webhook := r.Group("/helius-webhook")

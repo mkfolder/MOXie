@@ -8,14 +8,14 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Makefolder/cynero/internal/config"
-	"github.com/Makefolder/cynero/internal/handler"
-	"github.com/Makefolder/cynero/internal/helius"
-	"github.com/Makefolder/cynero/internal/log"
-	"github.com/Makefolder/cynero/internal/routes"
-	"github.com/Makefolder/cynero/internal/service"
-	"github.com/Makefolder/cynero/internal/workers"
-	"github.com/Makefolder/cynero/pkg/http"
+	"github.com/Makefolder/moxie/internal/config"
+	"github.com/Makefolder/moxie/internal/handler"
+	"github.com/Makefolder/moxie/internal/helius"
+	"github.com/Makefolder/moxie/internal/log"
+	"github.com/Makefolder/moxie/internal/routes"
+	"github.com/Makefolder/moxie/internal/service"
+	"github.com/Makefolder/moxie/internal/workers"
+	"github.com/Makefolder/moxie/pkg/http"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"gorm.io/driver/postgres"
@@ -24,16 +24,15 @@ import (
 )
 
 const (
-	defaultPath string           = "./config/default.yaml"
-	apiKey      string           = "569dbc7b-d716-4219-aa73-7580f65b3011"
-	heliusNet   helius.HeliusNet = helius.HeliusNetMainnet
+	apiKey    string           = "569dbc7b-d716-4219-aa73-7580f65b3011"
+	heliusNet helius.HeliusNet = helius.HeliusNetMainnet
 )
 
 func main() {
 	// Config init
 	path := os.Getenv("CONFIG_PATH")
 	if path == "" {
-		path = defaultPath
+		panic("CONFIG_PATH is not set")
 	}
 
 	cfg, err := config.New(path)
@@ -63,7 +62,7 @@ func main() {
 		CaseSensitive: false,
 		StrictRouting: false,
 		ServerHeader:  "CyneroServer",
-		AppName:       "Cynero",
+		AppName:       "MOXie",
 	})
 	api := app.Group("/api").Use(cors.New())
 

@@ -1,4 +1,4 @@
-module github.com/Makefolder/cynero
+module github.com/Makefolder/moxie
 
 go 1.25.1
 
