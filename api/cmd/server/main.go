@@ -32,7 +32,7 @@ func main() {
 	// Config init
 	path := os.Getenv("CONFIG_PATH")
 	if path == "" {
-		panic("CONFIG_PATH is not set")
+		panic("CONFIG_PATH environment variable not set")
 	}
 
 	cfg, err := config.New(path)
@@ -61,7 +61,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		CaseSensitive: false,
 		StrictRouting: false,
-		ServerHeader:  "CyneroServer",
+		ServerHeader:  "MOXieServer",
 		AppName:       "MOXie",
 	})
 	api := app.Group("/api").Use(cors.New())

@@ -1,28 +1,15 @@
-SRC=./cmd/server/main.go
-MIGRATION=./cmd/migration/migrate.go
-
-build:
-	@go build -o moxie $(SRC)
-	@go build -o migrate $(MIGRATION)
-
-run:
-	@go run $(SRC)
-
-migrate:
-	@go run $(MIGRATION)
-
 compose:
 	@docker compose up -d
 
 update:
-	@docker compose up -d --build moxie
+	@docker compose up -d --build $(NAME)
 
 clean:
 	@docker compose down
-	@docker image rm moxie-moxie
+	@docker image rm moxie-api
 	@rm -rf ./volumes/postgres_data
 	@mkdir -p ./volumes/postgres_data
 
 recompose: clean compose
 
-.PHONY: build run clean recompose migrate
+.PHONY: compose clean recompose update

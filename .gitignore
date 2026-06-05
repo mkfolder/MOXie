@@ -1,8 +1,44 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/ui/node_modules
+/ui/.pnp
+/ui/.pnp.js
+
+# testing
+/ui/coverage
+
+# next.js
+/ui/.next/
+/ui/out/
+
+# production
+/ui/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+/ui/npm-debug.log*
+/ui/yarn-debug.log*
+/ui/yarn-error.log*
+
+# local env files
+.env
+.env*.local
+
+# vercel
+/ui/.vercel
+
+# typescript
+/ui/*.tsbuildinfo
+/ui/next-env.d.ts
+
+/ui/pnpm-lock.yaml
+/ui/yarn.lock
+/ui/package-lock.json
+/ui/bun.lockb
+
 # dev docker compose volumes
 volumes/
-
-# OS specific
-.DS_Store
-
-# Envs
-.env

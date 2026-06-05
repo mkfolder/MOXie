@@ -11,14 +11,10 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-const (
-	defaultPath string = "./config/default.yaml"
-)
-
 func main() {
 	path := os.Getenv("CONFIG_PATH")
 	if path == "" {
-		path = defaultPath
+		panic("CONFIG_PATH environment variable not set")
 	}
 
 	cfg, err := config.New(path)

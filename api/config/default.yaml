@@ -4,7 +4,7 @@ server:
   webhook_url: https://api.moxie.io/helius-webhook/handle
 
 postgres:
-  dsn: postgres://cynero_owner:passwd@postgres:5432/moxie?sslmode=require
+  dsn: postgres://moxie_owner:passwd@postgres:5432/moxie?sslmode=require
 
 http:
   timeout: 5s
