@@ -8,6 +8,7 @@ clean:
 	@docker compose down
 	@docker image rm moxie-api
 	@docker image rm moxie-ui
+	@docker image rm moxie-caddy
 	@rm -rf ./volumes/postgres_data
 	@mkdir -p ./volumes/postgres_data
 

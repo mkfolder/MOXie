@@ -1,0 +1,7 @@
+http://localhost {
+    reverse_proxy ui:4321
+}
+
+http://api.localhost {
+    reverse_proxy api:7654
+}

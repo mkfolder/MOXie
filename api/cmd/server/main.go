@@ -64,7 +64,7 @@ func main() {
 		ServerHeader:  "MOXieServer",
 		AppName:       "MOXie",
 	})
-	api := app.Group("/api").Use(cors.New())
+	api := app.Use(cors.New())
 
 	httpClient := http.New(nil, nil, cfg.HTTP.Timeout)
 	hc := helius.NewClient(httpClient, webhookURL, apiKey, heliusNet)

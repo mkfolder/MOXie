@@ -95,7 +95,11 @@ moxie/
 │   ├── components/              # Reusable UI components
 │   └── layouts/                 # Page layouts
 │
-├── docker-compose.yaml          # API + UI + PostgreSQL + pgAdmin
+├── caddy/                        # Caddy reverse proxy
+│   ├── Caddyfile                 # Routes: localhost → UI, api.localhost → API
+│   └── Dockerfile
+│
+├── docker-compose.yaml          # API + UI + PostgreSQL + pgAdmin + Caddy
 └── Makefile                     # Docker manipulation
 ```
 
@@ -103,15 +107,15 @@ moxie/
 
 ## API Endpoints
 
-| Method | Path                         | Description                           |
-|--------|------------------------------|---------------------------------------|
-| `POST` | `/api/auth/register`         | Register a new merchant               |
-| `POST` | `/api/auth/login`            | Authenticate a merchant               |
-| `GET`  | `/api/health`                | Health check                          |
-| `GET`  | `/api/orders/find-all`       | List all orders                       |
-| `GET`  | `/api/orders/find/:id`       | Get order by ID                       |
-| `POST` | `/api/orders/create`         | Create a new order                    |
-| `POST` | `/api/helius-webhook/handle` | Incoming Helius webhook               |
+| Method | Path                     | Description                  |
+|--------|--------------------------|------------------------------|
+| `POST` | `/auth/register`         | Register a new merchant      |
+| `POST` | `/auth/login`            | Authenticate a merchant      |
+| `GET`  | `/health`                | Health check                 |
+| `GET`  | `/orders/find-all`       | List all orders              |
+| `GET`  | `/orders/find/:id`       | Get order by ID              |
+| `POST` | `/orders/create`         | Create a new order           |
+| `POST` | `/helius-webhook/handle` | Incoming Helius webhook      |
 
 ---
 
@@ -139,14 +143,20 @@ moxie/
 make compose
 ```
 
-This spins up four services:
+This spins up five services:
 
-| Service      | Port | Description                    |
-|--------------|------|--------------------------------|
-| **api**      | 7654 | Go/Fiber backend               |
-| **ui**       | 4321 | Next.js frontend               |
-| **postgres** | 5432 | PostgreSQL database            |
-| **pgadmin**  | 1444 | Database admin panel           |
+| Service      | Port        | Description                          |
+|--------------|-------------|--------------------------------------|
+| **caddy**    | 80          | Reverse proxy (single entry point)   |
+| **api**      | 7654        | Go/Fiber backend (internal)          |
+| **ui**       | 4321        | Next.js frontend (internal)          |
+| **postgres** | 5432        | PostgreSQL database                  |
+| **pgadmin**  | 1444        | Database admin panel                 |
+
+Caddy acts as the single entry point:
+
+- [`http://localhost`](http://localhost) → UI
+- [`http://api.localhost`](http://api.localhost) → API
 
 ### Configuration
 

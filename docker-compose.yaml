@@ -1,8 +1,6 @@
 services:
   api:
     build: ./api
-    ports:
-      - "7654:7654"
     environment:
       - CONFIG_PATH=./default.yaml
       - DATABASE_URL=postgres://moxie_owner:passwd@postgres:5432/moxie?sslmode=disable
@@ -16,7 +14,7 @@ services:
         - --no-verbose
         - --tries=1
         - --spider
-        - http://127.0.0.1:7654/api/health
+        - http://127.0.0.1:7654/health
       interval: 10s
       timeout: 5s
       retries: 5
@@ -26,13 +24,23 @@ services:
 
   ui:
     build: ./ui
-    ports:
-      - "4321:4321"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
     depends_on:
       api:
         condition: service_healthy
+    networks:
+      - moxie-net
+
+  caddy:
+    build: ./caddy
+    ports:
+      - "80:80"
+    depends_on:
+      api:
+        condition: service_healthy
+      ui:
+        condition: service_started
     networks:
       - moxie-net
 
