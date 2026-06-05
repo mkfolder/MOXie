@@ -2,7 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 
+	"github.com/Makefolder/moxie/internal/constants"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 )
@@ -44,7 +46,7 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	payment, err := h.s.CreateOrder(
+	order, err := h.s.CreateOrder(
 		c.Context(),
 		merchantID,
 		requestBody.RawAmount,
@@ -54,5 +56,8 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	return c.JSON(payment)
+	return c.JSON(fiber.Map{
+		"order":       order,
+		"qrcode_data": fmt.Sprintf("solana:https://%s/solpay/%s", constants.Subdomain, order.ID.String()),
+	})
 }

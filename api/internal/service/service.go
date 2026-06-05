@@ -7,6 +7,7 @@ import (
 	"github.com/Makefolder/moxie/internal/helius"
 	"github.com/Makefolder/moxie/internal/models"
 	"github.com/Makefolder/moxie/pkg/http"
+	"github.com/gagliardetto/solana-go/rpc"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -18,6 +19,7 @@ type Service struct {
 	db        *gorm.DB
 	hc        *helius.HeliusClient
 	http      *http.Client
+	rpc       *rpc.Client
 	orders    db.Repository[models.Order]
 	merchants db.Repository[models.Merchant]
 }
@@ -27,6 +29,7 @@ type NewServiceParams struct {
 	HC     *helius.HeliusClient
 	HTTP   *http.Client
 	GormDB *gorm.DB
+	RPC    string
 }
 
 func New(params NewServiceParams) *Service {
@@ -42,6 +45,7 @@ func New(params NewServiceParams) *Service {
 		panic("invalid service.New arguments: gorm db is nil")
 	}
 
+	rpcClient := rpc.New(rpc.DevNet_RPC)
 	ordersRepository := db.NewGormRepository[models.Order](params.GormDB)
 	merchantsRepository := db.NewGormRepository[models.Merchant](params.GormDB)
 	return &Service{
@@ -51,6 +55,7 @@ func New(params NewServiceParams) *Service {
 		db:        params.GormDB,
 		orders:    ordersRepository,
 		merchants: merchantsRepository,
+		rpc:       rpcClient,
 	}
 }
 

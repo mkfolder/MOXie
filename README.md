@@ -60,7 +60,7 @@ Customer                   MOXie API                         Helius             
 
 **The payment flow description:**
 
-1. **Create an order** — The merchant's backend calls `POST /orders/create` with the requested amount and optional metadata. MOXie returns a destination Solana address and a unique base58-encoded memo.
+1. **Create an order** — The merchant's backend calls `POST /orders/create` with the requested amount and optional metadata. MOXie returns a destination Solana address, a unique base58-encoded memo, and a `qrcode_data` field containing a `solana:` URL for wallet scanning.
 
 2. **Customer sends SOL + memo** — The customer sends SOL to the merchant's address with the memo attached (via the [Solana Memo Program](https://spl.solana.com/memo)). The memo acts as a payment reference, linking the on-chain transfer to the order.
 
@@ -69,6 +69,12 @@ Customer                   MOXie API                         Helius             
 4. **Match & accumulate** — MOXie decodes the memo to find the corresponding order, checks the native balance change on the merchant's account, and accumulates the paid amount. If the total meets or exceeds the requested amount, the order is marked as paid.
 
 5. **Notify the merchant** — MOXie sends an HTTP POST to the merchant's registered webhook URL with the order details and transaction data.
+
+### QR code scanning (Solana Pay)
+
+The `POST /orders/create` response includes a `qrcode_data` field with a `solana:` URL. Merchants can render this as a QR code. When scanned with a Solana wallet (e.g. Phantom, Backpack), the wallet automatically populates the recipient, amount, and memo — the customer just taps confirm.
+
+The Solana Pay endpoints (`GET /solpay/:id`, `POST /solpay/:id`) serve the metadata and transaction building required by the [Solana Pay spec](https://docs.solanapay.com).
 
 ---
 
@@ -84,6 +90,7 @@ moxie/
 │   └── internal/
 │       ├── handler/             # HTTP handlers (auth, orders, webhook)
 │       ├── service/             # Business logic (payment processing)
+│       ├── constants/           # Shared constants (domain, subdomain)
 │       ├── helius/              # Helius RPC client & types
 │       ├── models/              # GORM models (Merchant, Order)
 │       ├── routes/              # Route registration
@@ -107,15 +114,17 @@ moxie/
 
 ## API Endpoints
 
-| Method | Path                     | Description                  |
-|--------|--------------------------|------------------------------|
-| `POST` | `/auth/register`         | Register a new merchant      |
-| `POST` | `/auth/login`            | Authenticate a merchant      |
-| `GET`  | `/health`                | Health check                 |
-| `GET`  | `/orders/find-all`       | List all orders              |
-| `GET`  | `/orders/find/:id`       | Get order by ID              |
-| `POST` | `/orders/create`         | Create a new order           |
-| `POST` | `/helius-webhook/handle` | Incoming Helius webhook      |
+| Method | Path                     | Description                               |
+|--------|--------------------------|-------------------------------------------|
+| `POST` | `/auth/register`         | Register a new merchant                   |
+| `POST` | `/auth/login`            | Authenticate a merchant                   |
+| `GET`  | `/health`                | Health check                              |
+| `GET`  | `/orders/find-all`       | List all orders                           |
+| `GET`  | `/orders/find/:id`       | Get order by ID                           |
+| `POST` | `/orders/create`         | Create a new order                        |
+| `GET`  | `/solpay/:id`            | Solana Pay metadata for wallet to display |
+| `POST` | `/solpay/:id`            | Build transaction for Solana Pay flow     |
+| `POST` | `/helius-webhook/handle` | Incoming Helius webhook                   |
 
 ---
 
@@ -125,8 +134,8 @@ moxie/
 |-----------------|----------------------------------------------------------------|
 | **Backend**     | Go 1.25, Fiber v3, GORM, PostgreSQL 17, Zap logging            |
 | **Frontend**    | Next.js 16 (Pages Router), React 19, HeroUI v3, Tailwind v4    |
-| **Blockchain**  | Solana, Helius RPC + Webhooks, Memo Program                    |
-| **Infra**       | Docker Compose, pgAdmin                                        |
+| **Blockchain**  | Solana, Solana Pay, Memo Program, Helius RPC + Webhooks        |
+| **Infra**       | Docker, Docker Compose, pgAdmin                                |
 
 ---
 
@@ -196,6 +205,8 @@ workers:
 - On-chain memo decoding and order matching
 - Payment accumulation with partial payment support
 - Merchant notification via outbound webhook
+- Solana Pay QR code generation (`solana:` URL scheme)
+- Solana Pay metadata & transaction endpoints for wallet scanning
 - Background worker for expired order cleanup
 
 ### 🚧 In Progress

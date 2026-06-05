@@ -16,6 +16,7 @@ import (
 	"github.com/Makefolder/moxie/internal/service"
 	"github.com/Makefolder/moxie/internal/workers"
 	"github.com/Makefolder/moxie/pkg/http"
+	"github.com/gagliardetto/solana-go/rpc"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
 	"gorm.io/driver/postgres"
@@ -74,6 +75,7 @@ func main() {
 		HTTP:   httpClient,
 		HC:     hc,
 		GormDB: gormDB,
+		RPC:    rpc.DevNet_RPC,
 	}
 
 	s := service.New(params)

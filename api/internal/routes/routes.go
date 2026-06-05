@@ -13,6 +13,10 @@ func Setup(r fiber.Router, h *handler.Handler) {
 	orders.Get("/find/:id", h.FindOrder)
 	orders.Post("/create", h.CreateOrder)
 
+	solpay := r.Group("/solpay")
+	solpay.Get("/:id", h.GetSolPayMetadata)
+	solpay.Post("/:id", h.BuildSolPayTransaction)
+
 	webhook := r.Group("/helius-webhook")
 	webhook.Post("/handle", h.HeliusWebhook)
 
