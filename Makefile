@@ -7,6 +7,7 @@ update:
 clean:
 	@docker compose down
 	@docker image rm moxie-api
+	@docker image rm moxie-ui
 	@rm -rf ./volumes/postgres_data
 	@mkdir -p ./volumes/postgres_data
 

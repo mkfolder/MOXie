@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -p 4321",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 4321",
     "lint": "eslint --fix",
     "pretty": "prettier --write ."
   },
