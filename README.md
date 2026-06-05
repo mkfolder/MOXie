@@ -3,7 +3,7 @@
   <img src="https://img.shields.io/badge/network-Solana-9945FF?style=flat-square&logo=solana" alt="Network: Solana"/>
   <img src="https://img.shields.io/badge/go-%3E%3D1.25-blue?style=flat-square&logo=go" alt="Go"/>
   <img src="https://img.shields.io/badge/next.js-16-black?style=flat-square&logo=next.js" alt="Next.js 16"/>
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License: MIT"/>
+  <img src="https://img.shields.io/badge/license-AGPLv3-green?style=flat-square" alt="License: GNU AGPLv3"/>
 </p>
 
 <p align="center">
