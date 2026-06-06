@@ -1,4 +1,5 @@
 import { Wallet, Plus, Copy, ExternalLink } from 'lucide-react'
+
 import DefaultLayout from '@/layouts/default'
 
 const addresses = [
@@ -27,7 +28,7 @@ const AddressesPage = () => {
             <div key={label} className="bg-surface flex items-center justify-between rounded-2xl p-5">
               <div className="flex items-center gap-4">
                 <div className="bg-accent/10 flex h-10 w-10 items-center justify-center rounded-xl">
-                  <Wallet size={20} className="text-accent" />
+                  <Wallet className="text-accent" size={20} />
                 </div>
                 <div>
                   <p className="text-sm font-medium">{label}</p>

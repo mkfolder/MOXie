@@ -9,14 +9,19 @@ import (
 	"github.com/mkfolder/moxie/internal/models"
 )
 
-func (s *Service) FindAll(ctx context.Context) ([]models.Order, error) {
-	orders, err := s.orders.FindAll(ctx, nil)
-	if err != nil {
+func (s *Service) FindAll(ctx context.Context, merchantID uuid.UUID) ([]models.Order, error) {
+	var orders []models.Order
+	if err := s.db.WithContext(ctx).Where("merchant_id = ?", merchantID).Find(&orders).Error; err != nil {
 		return nil, fmt.Errorf("failed to find all orders: %w", err)
 	}
 
 	for idx := range orders {
-		orders[idx].Address = orders[idx].Merchant.Address
+		address := "not available"
+		if orders[idx].Merchant.Address != nil {
+			address = *orders[idx].Merchant.Address
+		}
+
+		orders[idx].Address = address
 	}
 
 	return orders, nil
@@ -41,9 +46,14 @@ func (s *Service) CreateOrder(
 		return nil, fmt.Errorf("failed to find merchant: %w", err)
 	}
 
+	if merchant.Address == nil {
+		return nil, fmt.Errorf("merchant address is not specified")
+	}
+
+	address := *merchant.Address
 	o := models.Order{
 		MerchantID:         merchantID,
-		Address:            merchant.Address,
+		Address:            address,
 		RawRequestedAmount: rawAmount,
 		CustomData:         customData,
 	}

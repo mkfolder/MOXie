@@ -1,7 +1,9 @@
+import type { NavLink, SidebarUser } from './sidebar.types'
+
 import { useRouter } from 'next/router'
 import { Home, Wallet, ShoppingCart, ArrowLeftRight, User } from 'lucide-react'
+
 import { useAuth } from '@/context/auth_context'
-import type { NavLink, SidebarUser } from './sidebar.types'
 
 const navLinks: NavLink[] = [
   { label: 'Home', href: '/', icon: Home },
@@ -11,7 +13,7 @@ const navLinks: NavLink[] = [
   { label: 'Profile', href: '/profile', icon: User },
 ]
 
-export function useSidebar() {
+export const useSidebar = () => {
   const { pathname } = useRouter()
   const { merchant, logout } = useAuth()
 

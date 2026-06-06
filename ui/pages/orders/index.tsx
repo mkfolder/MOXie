@@ -1,4 +1,5 @@
-import { ShoppingCart, Package, Eye } from 'lucide-react'
+import { Package, Eye } from 'lucide-react'
+
 import DefaultLayout from '@/layouts/default'
 
 const orders = [
@@ -24,24 +25,26 @@ const OrdersPage = () => {
         </div>
 
         <div className="bg-surface rounded-2xl">
-          <div className="grid grid-cols-5 gap-4 border-b px-6 py-4 text-xs font-medium uppercase tracking-wider text-muted">
+          <div className="text-muted grid grid-cols-5 gap-4 border-b px-6 py-4 text-xs font-medium tracking-wider uppercase">
             <span>Order</span>
             <span>Customer</span>
             <span>Amount</span>
             <span>Status</span>
             <span className="text-right">Action</span>
           </div>
-          {orders.map((order, i) => (
+          {orders.map(order => (
             <div key={order.id} className="grid grid-cols-5 items-center gap-4 px-6 py-4">
               <div className="flex items-center gap-3">
                 <div className="bg-warning/10 flex h-8 w-8 items-center justify-center rounded-lg">
-                  <Package size={16} className="text-warning" />
+                  <Package className="text-warning" size={16} />
                 </div>
                 <span className="text-sm font-medium">{order.id}</span>
               </div>
               <span className="font-mono text-sm">{order.customer}</span>
               <span className="text-sm font-semibold">{order.amount}</span>
-              <span className={`w-fit rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[order.status]}`}>{order.status}</span>
+              <span className={`w-fit rounded-full px-2.5 py-0.5 text-xs font-medium ${statusStyles[order.status]}`}>
+                {order.status}
+              </span>
               <div className="flex justify-end">
                 <button className="text-muted hover:text-foreground transition-colors">
                   <Eye size={16} />

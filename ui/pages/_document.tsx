@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 import { fontSans } from '@/config/fonts'
 
-export default function Document() {
+const Document = () => {
   return (
     <Html lang="en">
       <Head />
@@ -14,3 +14,5 @@ export default function Document() {
     </Html>
   )
 }
+
+export default Document

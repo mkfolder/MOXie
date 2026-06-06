@@ -1,4 +1,5 @@
-import { ArrowLeftRight, ArrowUpRight, ArrowDownLeft, ExternalLink } from 'lucide-react'
+import { ArrowUpRight, ArrowDownLeft, ExternalLink } from 'lucide-react'
+
 import DefaultLayout from '@/layouts/default'
 
 const transactions = [
@@ -19,7 +20,7 @@ const TransactionsPage = () => {
         </div>
 
         <div className="bg-surface rounded-2xl">
-          <div className="hidden grid-cols-4 gap-4 border-b px-6 py-4 text-xs font-medium uppercase tracking-wider text-muted md:grid">
+          <div className="text-muted hidden grid-cols-4 gap-4 border-b px-6 py-4 text-xs font-medium tracking-wider uppercase md:grid">
             <span>From</span>
             <span>To</span>
             <span>Amount</span>
@@ -28,17 +29,21 @@ const TransactionsPage = () => {
           {transactions.map((tx, i) => (
             <div key={i} className="grid grid-cols-4 items-center gap-4 px-6 py-4">
               <div className="flex items-center gap-3">
-                <div className={`flex h-8 w-8 items-center justify-center rounded-full ${tx.incoming ? 'bg-accent/10' : 'bg-danger/10'}`}>
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full ${tx.incoming ? 'bg-accent/10' : 'bg-danger/10'}`}
+                >
                   {tx.incoming ? (
-                    <ArrowDownLeft size={14} className="text-accent" />
+                    <ArrowDownLeft className="text-accent" size={14} />
                   ) : (
-                    <ArrowUpRight size={14} className="text-danger" />
+                    <ArrowUpRight className="text-danger" size={14} />
                   )}
                 </div>
                 <span className="font-mono text-sm">{tx.from}</span>
               </div>
               <span className="font-mono text-sm">{tx.to}</span>
-              <span className={`text-sm font-semibold ${tx.incoming ? 'text-success' : 'text-danger'}`}>{tx.amount}</span>
+              <span className={`text-sm font-semibold ${tx.incoming ? 'text-success' : 'text-danger'}`}>
+                {tx.amount}
+              </span>
               <div className="flex items-center justify-end gap-2">
                 <span className="text-muted text-sm">{tx.date}</span>
                 <button className="text-muted hover:text-foreground transition-colors">

@@ -7,7 +7,6 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 	"github.com/google/uuid"
 	"github.com/mkfolder/moxie/internal/db"
-	"github.com/mkfolder/moxie/internal/helius"
 	"github.com/mkfolder/moxie/internal/models"
 	"github.com/mkfolder/moxie/pkg/http"
 	"go.uber.org/zap"
@@ -25,7 +24,6 @@ type AuthConfig struct {
 type Service struct {
 	log       *zap.SugaredLogger
 	db        *gorm.DB
-	hc        *helius.HeliusClient
 	http      *http.Client
 	rpc       *rpc.Client
 	orders    db.Repository[models.Order]
@@ -35,7 +33,6 @@ type Service struct {
 
 type NewServiceParams struct {
 	Log    *zap.SugaredLogger
-	HC     *helius.HeliusClient
 	HTTP   *http.Client
 	GormDB *gorm.DB
 	RPC    string
@@ -47,10 +44,6 @@ func New(params NewServiceParams) *Service {
 		panic("invalid service.New arguments: logger is nil")
 	}
 
-	if params.HC == nil {
-		panic("invalid service.New arguments: helius client is nil")
-	}
-
 	if params.GormDB == nil {
 		panic("invalid service.New arguments: gorm db is nil")
 	}
@@ -60,7 +53,6 @@ func New(params NewServiceParams) *Service {
 	merchantsRepository := db.NewGormRepository[models.Merchant](params.GormDB)
 	return &Service{
 		log:       params.Log,
-		hc:        params.HC,
 		http:      params.HTTP,
 		db:        params.GormDB,
 		orders:    ordersRepository,

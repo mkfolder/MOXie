@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/gagliardetto/solana-go"
 	"github.com/google/uuid"
@@ -17,7 +18,13 @@ func (s *Service) BuildOrderTransaction(
 		return nil, err
 	}
 
-	recipient, err := solana.PublicKeyFromBase58(order.Merchant.Address)
+	if order.Merchant.Address == nil {
+		return nil, errors.New("merchant's address is not available")
+	}
+
+	address := *order.Merchant.Address
+
+	recipient, err := solana.PublicKeyFromBase58(address)
 	if err != nil {
 		s.log.Errorf("failed to parse recipient address: %w", err)
 		return nil, err

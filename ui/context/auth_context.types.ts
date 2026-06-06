@@ -4,7 +4,7 @@ export interface Merchant {
   id: string
   email: string
   api_key: string
-  address: string
+  address?: string
   totp_enabled: boolean
   webhook_url?: string | null
   created_at: string

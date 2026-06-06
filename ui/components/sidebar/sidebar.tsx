@@ -2,6 +2,7 @@ import NextLink from 'next/link'
 import { BookOpen, LogOut, Sparkles } from 'lucide-react'
 import { Button, Avatar, Separator } from '@heroui/react'
 import clsx from 'clsx'
+
 import { useSidebar } from './use_sidebar'
 
 export const Sidebar = () => {
@@ -15,7 +16,7 @@ export const Sidebar = () => {
     <aside className="bg-background fixed top-0 left-0 z-40 flex h-screen w-64 flex-col border-r">
       <div className="border-separator flex h-16 items-center gap-3 border-b px-6">
         <div className="bg-primary flex h-9 w-9 items-center justify-center rounded-lg">
-          <Sparkles size={18} className="text-primary-foreground" />
+          <Sparkles className="text-primary-foreground" size={18} />
         </div>
         <span className="text-xl font-bold tracking-tight">MOXie</span>
       </div>

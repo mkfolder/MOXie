@@ -79,12 +79,10 @@ func main() {
 	}))
 
 	httpClient := http.New(nil, nil, cfg.HTTP.Timeout)
-	hc := helius.NewClient(httpClient, webhookURL, apiKey, heliusNet)
 
 	params := service.NewServiceParams{
 		Log:    log,
 		HTTP:   httpClient,
-		HC:     hc,
 		GormDB: gormDB,
 		RPC:    rpc.DevNet_RPC,
 		Auth: service.AuthConfig{

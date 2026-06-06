@@ -1,4 +1,5 @@
 import { User, Settings, Key, Bell, Shield } from 'lucide-react'
+
 import DefaultLayout from '@/layouts/default'
 
 const sections = [
@@ -20,7 +21,7 @@ const ProfilePage = () => {
         <div className="bg-surface rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="bg-accent/10 flex h-16 w-16 items-center justify-center rounded-2xl">
-              <User size={28} className="text-accent" />
+              <User className="text-accent" size={28} />
             </div>
             <div>
               <p className="text-lg font-semibold">johndoe</p>
@@ -36,13 +37,13 @@ const ProfilePage = () => {
               className="bg-surface hover:bg-surface/80 flex cursor-pointer items-center gap-4 rounded-2xl p-5 text-left transition-colors"
             >
               <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-xl">
-                <Icon size={20} className="text-primary" />
+                <Icon className="text-primary" size={20} />
               </div>
               <div>
                 <p className="text-sm font-medium">{label}</p>
                 <p className="text-muted mt-0.5 text-xs">{description}</p>
               </div>
-              <Settings size={16} className="text-muted ml-auto" />
+              <Settings className="text-muted ml-auto" size={16} />
             </button>
           ))}
         </div>

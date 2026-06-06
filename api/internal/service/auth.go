@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"net/url"
 
 	"github.com/mkfolder/moxie/internal/auth"
 	"github.com/mkfolder/moxie/internal/models"
@@ -23,32 +22,21 @@ type LoginResult struct {
 
 func (s *Service) RegisterMerchant(
 	ctx context.Context,
-	email, password, address string,
-	webhookURL *url.URL,
+	email, password string,
 ) (*models.Merchant, error) {
 	var merchant models.Merchant
 
-	merchant.Address = address
 	merchant.Email = email
-	if webhookURL != nil {
-		merchant.WebhookURL = new(string)
-		*merchant.WebhookURL = webhookURL.String()
-	}
-
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
 	merchant.PasswdHash = hash
-
 	if err := s.merchants.Create(ctx, &merchant); err != nil {
 		return nil, fmt.Errorf("failed to register new merchant: %w", err)
 	}
 
-	if address != "" {
-		go s.hc.CreateWebhook(ctx, []string{address})
-	}
 	return &merchant, nil
 }
 

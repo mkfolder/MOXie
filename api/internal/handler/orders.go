@@ -10,7 +10,8 @@ import (
 )
 
 func (h *Handler) FindAll(c fiber.Ctx) error {
-	orders, err := h.s.FindAll(c.Context())
+	merchantID := c.Locals("merchant_id").(uuid.UUID)
+	orders, err := h.s.FindAll(c.Context(), merchantID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}

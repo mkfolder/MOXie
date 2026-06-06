@@ -1,12 +1,14 @@
 import { useRouter } from 'next/router'
-import { useAuth } from '@/context/auth_context'
+
 import { Head } from './head'
+
+import { useAuth } from '@/context/auth_context'
 import { Sidebar } from '@/components/sidebar'
 import { Header } from '@/components/header'
 
 const publicPaths = ['/login', '/register']
 
-export default function DefaultLayout({ children }: { children: React.ReactNode }) {
+const DefaultLayout = ({ children }: { children: React.ReactNode }) => {
   const { is_authenticated, is_loading } = useAuth()
   const { pathname, replace } = useRouter()
 
@@ -20,6 +22,7 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
 
   if (!is_authenticated && !publicPaths.includes(pathname)) {
     replace('/login')
+
     return null
   }
 
@@ -38,3 +41,5 @@ export default function DefaultLayout({ children }: { children: React.ReactNode 
     </div>
   )
 }
+
+export default DefaultLayout

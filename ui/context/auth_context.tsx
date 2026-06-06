@@ -8,7 +8,7 @@ import { api, ApiError } from '@/lib/api'
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-export function AuthProvider({ children }: AuthProviderProps) {
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [merchant, setMerchant] = useState<Merchant | null>(null)
   const [is_loading, setIsLoading] = useState(true)
 
@@ -111,7 +111,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   )
 }
 
-export function useAuth(): AuthContextValue {
+export const useAuth = (): AuthContextValue => {
   const ctx = useContext(AuthContext)
 
   if (!ctx) {

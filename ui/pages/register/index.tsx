@@ -151,26 +151,29 @@ const RegisterPage = () => {
                 <div key={s.key} className="flex items-center">
                   <div className="flex flex-col items-center gap-1.5">
                     <div
-                      className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-medium transition-all duration-300 ${isDone
-                        ? 'bg-accent text-white'
-                        : isActive
-                          ? 'border-accent/50 bg-accent/10 text-accent ring-accent/30 ring-1'
-                          : 'border-white/10 bg-white/[0.03] text-white/30'
-                        }`}
+                      className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-medium transition-all duration-300 ${
+                        isDone
+                          ? 'bg-accent text-white'
+                          : isActive
+                            ? 'border-accent/50 bg-accent/10 text-accent ring-accent/30 ring-1'
+                            : 'border-white/10 bg-white/[0.03] text-white/30'
+                      }`}
                     >
                       {isDone ? <Check size={14} /> : <Icon size={14} />}
                     </div>
                     <span
-                      className={`hidden text-[11px] font-medium tracking-wider uppercase transition-colors sm:inline ${isActive || isDone ? 'text-accent' : 'text-white/30'
-                        }`}
+                      className={`hidden text-[11px] font-medium tracking-wider uppercase transition-colors sm:inline ${
+                        isActive || isDone ? 'text-accent' : 'text-white/30'
+                      }`}
                     >
                       {s.label}
                     </span>
                   </div>
                   {i < steps.length - 1 && (
                     <div
-                      className={`mx-2 mb-5 h-px w-8 transition-colors sm:mx-3 sm:w-12 ${i < currentStepIndex ? 'bg-accent/50' : 'bg-white/10'
-                        }`}
+                      className={`mx-2 mb-5 h-px w-8 transition-colors sm:mx-3 sm:w-12 ${
+                        i < currentStepIndex ? 'bg-accent/50' : 'bg-white/10'
+                      }`}
                     />
                   )}
                 </div>
@@ -193,8 +196,9 @@ const RegisterPage = () => {
                 What is your email?
               </label>
               <div
-                className={`flex items-center gap-2 rounded-xl border bg-white/[0.03] px-3.5 transition-all duration-200 focus-within:bg-white/[0.06] ${field_errors.email ? 'border-danger' : 'focus-within:border-accent/50 border-white/10'
-                  }`}
+                className={`flex items-center gap-2 rounded-xl border bg-white/[0.03] px-3.5 transition-all duration-200 focus-within:bg-white/[0.06] ${
+                  field_errors.email ? 'border-danger' : 'focus-within:border-accent/50 border-white/10'
+                }`}
               >
                 <Mail className="shrink-0 text-white/30" size={16} />
                 <input
@@ -237,8 +241,9 @@ const RegisterPage = () => {
                 Password
               </label>
               <div
-                className={`flex items-center gap-2 rounded-xl border bg-white/[0.03] px-3.5 transition-all duration-200 focus-within:bg-white/[0.06] ${field_errors.password ? 'border-danger' : 'focus-within:border-accent/50 border-white/10'
-                  }`}
+                className={`flex items-center gap-2 rounded-xl border bg-white/[0.03] px-3.5 transition-all duration-200 focus-within:bg-white/[0.06] ${
+                  field_errors.password ? 'border-danger' : 'focus-within:border-accent/50 border-white/10'
+                }`}
               >
                 <Lock className="shrink-0 text-white/30" size={16} />
                 <input
@@ -271,8 +276,9 @@ const RegisterPage = () => {
                     {[0, 1, 2, 3, 4].map(i => (
                       <div
                         key={i}
-                        className={`h-full flex-1 rounded-full transition-all duration-300 ${i < password_strength.strength ? strengthColorsBg[password_strength.strength] : 'bg-white/5'
-                          }`}
+                        className={`h-full flex-1 rounded-full transition-all duration-300 ${
+                          i < password_strength.strength ? strengthColorsBg[password_strength.strength] : 'bg-white/5'
+                        }`}
                       />
                     ))}
                   </div>
@@ -290,8 +296,9 @@ const RegisterPage = () => {
                 Confirm password
               </label>
               <div
-                className={`flex items-center gap-2 rounded-xl border bg-white/[0.03] px-3.5 transition-all duration-200 focus-within:bg-white/[0.06] ${field_errors.confirm_password ? 'border-danger' : 'focus-within:border-accent/50 border-white/10'
-                  }`}
+                className={`flex items-center gap-2 rounded-xl border bg-white/[0.03] px-3.5 transition-all duration-200 focus-within:bg-white/[0.06] ${
+                  field_errors.confirm_password ? 'border-danger' : 'focus-within:border-accent/50 border-white/10'
+                }`}
               >
                 <Lock className="shrink-0 text-white/30" size={16} />
                 <input

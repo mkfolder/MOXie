@@ -1,5 +1,19 @@
-import { DollarSign, ShoppingCart, Users, Wallet, TrendingUp, TrendingDown, Plus, List, UserCog, ArrowUpRight, ArrowDownLeft, ChevronRight } from 'lucide-react'
+import {
+  DollarSign,
+  ShoppingCart,
+  Users,
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  Plus,
+  List,
+  UserCog,
+  ArrowUpRight,
+  ArrowDownLeft,
+  ChevronRight,
+} from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
+
 import DefaultLayout from '@/layouts/default'
 
 const stats = [
@@ -55,7 +69,7 @@ const IndexPage = () => {
             <div key={label} className="bg-surface flex flex-col gap-3 rounded-2xl p-5">
               <div className="flex items-center gap-3">
                 <div className={`${bgAccent} flex h-10 w-10 items-center justify-center rounded-xl`}>
-                  <Icon size={20} className={accent} />
+                  <Icon className={accent} size={20} />
                 </div>
                 <span className="text-muted text-sm">{label}</span>
               </div>
@@ -65,11 +79,7 @@ const IndexPage = () => {
                   <span
                     className={`flex items-center gap-0.5 rounded-full px-2 py-0.5 text-xs font-medium ${change.startsWith('+') ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}
                   >
-                    {change.startsWith('+') ? (
-                      <TrendingUp size={12} />
-                    ) : (
-                      <TrendingDown size={12} />
-                    )}
+                    {change.startsWith('+') ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
                     {change}
                   </span>
                 )}
@@ -81,41 +91,41 @@ const IndexPage = () => {
         <div className="bg-surface rounded-2xl p-6">
           <h2 className="mb-1 text-base font-semibold">Payment Activity</h2>
           <p className="text-muted mb-6 text-sm">Daily payment volume for the last 7 days</p>
-          <ResponsiveContainer width="100%" height={280} className="outline-none">
+          <ResponsiveContainer className="outline-none" height={280} width="100%">
             <LineChart data={chartData} margin={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--foreground)" strokeOpacity={0.1} vertical={false} />
+              <CartesianGrid stroke="var(--foreground)" strokeDasharray="3 3" strokeOpacity={0.1} vertical={false} />
               <XAxis
-                dataKey="day"
                 axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'currentColor', fontSize: 13, opacity: 0.5 }}
+                dataKey="day"
                 dy={10}
+                tick={{ fill: 'currentColor', fontSize: 13, opacity: 0.5 }}
+                tickLine={false}
               />
               <YAxis
                 axisLine={false}
-                tickLine={false}
-                tick={{ fill: 'currentColor', fontSize: 13, opacity: 0.5 }}
                 dx={-10}
-                tickFormatter={(v) => `$${v}`}
+                tick={{ fill: 'currentColor', fontSize: 13, opacity: 0.5 }}
+                tickFormatter={v => `$${v}`}
+                tickLine={false}
               />
               <Tooltip
-                cursor={{ stroke: 'var(--foreground)', strokeOpacity: 0.1, strokeDasharray: '3 3', strokeWidth: 1 }}
                 contentStyle={{
                   background: 'var(--surface)',
                   border: '1px solid var(--separator)',
                   borderRadius: '12px',
                   fontSize: '13px',
                 }}
+                cursor={{ stroke: 'var(--foreground)', strokeOpacity: 0.1, strokeDasharray: '3 3', strokeWidth: 1 }}
+                formatter={value => (value ? [`$${value}`, 'Volume'] : ['$0', 'Volume'])}
                 labelStyle={{ fontWeight: 600 }}
-                formatter={(value) => value ? [`$${value}`, 'Volume'] : ['$0', 'Volume']}
               />
               <Line
-                type="monotone"
+                activeDot={{ fill: 'var(--accent)', r: 7, stroke: 'var(--accent)', strokeWidth: 0 }}
                 dataKey="amount"
+                dot={{ fill: 'var(--surface)', stroke: 'var(--accent)', strokeWidth: 2, r: 5 }}
                 stroke="var(--accent)"
                 strokeWidth={2}
-                dot={{ fill: 'var(--surface)', stroke: 'var(--accent)', strokeWidth: 2, r: 5 }}
-                activeDot={{ fill: 'var(--accent)', r: 7, stroke: 'var(--accent)', strokeWidth: 0 }}
+                type="monotone"
               />
             </LineChart>
           </ResponsiveContainer>
@@ -136,18 +146,26 @@ const IndexPage = () => {
                 <div key={i}>
                   {i > 0 && <div className="border-separator mx-1 border-t" />}
                   <div className="flex items-center gap-3 px-1 py-3">
-                    <div className={`relative flex h-9 w-9 items-center justify-center rounded-full ${tx.incoming ? 'bg-accent/10' : 'bg-danger/10'}`}>
+                    <div
+                      className={`relative flex h-9 w-9 items-center justify-center rounded-full ${tx.incoming ? 'bg-accent/10' : 'bg-danger/10'}`}
+                    >
                       {tx.incoming ? (
-                        <ArrowDownLeft size={15} className="text-accent" />
+                        <ArrowDownLeft className="text-accent" size={15} />
                       ) : (
-                        <ArrowUpRight size={15} className="text-danger" />
+                        <ArrowUpRight className="text-danger" size={15} />
                       )}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{tx.from} → {tx.to}</p>
+                      <p className="truncate text-sm font-medium">
+                        {tx.from} → {tx.to}
+                      </p>
                       <p className="text-muted text-xs">{tx.time}</p>
                     </div>
-                    <span className={`whitespace-nowrap text-sm font-semibold ${tx.incoming ? 'text-success' : 'text-danger'}`}>{tx.amount}</span>
+                    <span
+                      className={`text-sm font-semibold whitespace-nowrap ${tx.incoming ? 'text-success' : 'text-danger'}`}
+                    >
+                      {tx.amount}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -158,22 +176,40 @@ const IndexPage = () => {
             <h2 className="mb-4 text-base font-semibold">Quick Actions</h2>
             <div className="flex flex-col gap-2">
               {[
-                { title: 'Add Address', subtitle: 'Set up an active address', icon: Plus, accent: 'text-accent', bg: 'bg-accent/10' },
-                { title: 'View Orders', subtitle: 'Check all your payment orders', icon: List, accent: 'text-warning', bg: 'bg-warning/10' },
-                { title: 'Update Profile', subtitle: 'Configure your settings', icon: UserCog, accent: 'text-success', bg: 'bg-success/10' },
+                {
+                  title: 'Add Address',
+                  subtitle: 'Set up an active address',
+                  icon: Plus,
+                  accent: 'text-accent',
+                  bg: 'bg-accent/10',
+                },
+                {
+                  title: 'View Orders',
+                  subtitle: 'Check all your payment orders',
+                  icon: List,
+                  accent: 'text-warning',
+                  bg: 'bg-warning/10',
+                },
+                {
+                  title: 'Update Profile',
+                  subtitle: 'Configure your settings',
+                  icon: UserCog,
+                  accent: 'text-success',
+                  bg: 'bg-success/10',
+                },
               ].map(({ title, subtitle, icon: Icon, accent, bg }) => (
                 <button
                   key={title}
-                  className="group flex cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors hover:bg-background"
+                  className="group hover:bg-background flex cursor-pointer items-center gap-3 rounded-xl px-3 py-3 text-left transition-colors"
                 >
                   <div className={`${bg} flex h-10 w-10 items-center justify-center rounded-xl`}>
-                    <Icon size={20} className={accent} />
+                    <Icon className={accent} size={20} />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium">{title}</p>
                     <p className="text-muted truncate text-xs">{subtitle}</p>
                   </div>
-                  <ChevronRight size={16} className="text-muted opacity-0 transition-opacity group-hover:opacity-100" />
+                  <ChevronRight className="text-muted opacity-0 transition-opacity group-hover:opacity-100" size={16} />
                 </button>
               ))}
             </div>

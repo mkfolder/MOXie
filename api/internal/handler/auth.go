@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"net/url"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
@@ -14,12 +13,6 @@ import (
 type AuthRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
-}
-
-type RegisterRequest struct {
-	AuthRequest
-	Address    string `json:"address"`
-	WebhookURL string `json:"webhook_url"`
 }
 
 type TwoFactorRequest struct {
@@ -54,8 +47,7 @@ func (h *Handler) AuthMerchant(c fiber.Ctx) error {
 }
 
 func (h *Handler) RegisterMerchant(c fiber.Ctx) error {
-	var body RegisterRequest
-
+	var body AuthRequest
 	if err := json.Unmarshal(c.Body(), &body); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -68,20 +60,7 @@ func (h *Handler) RegisterMerchant(c fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	var (
-		parsedWebhook *url.URL
-		err           error
-	)
-	if body.WebhookURL != "" {
-		parsedWebhook, err = url.Parse(body.WebhookURL)
-		if err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
-		}
-	}
-
-	merchant, err := h.s.RegisterMerchant(
-		c.Context(), body.Email, body.Password, body.Address, parsedWebhook,
-	)
+	merchant, err := h.s.RegisterMerchant(c.Context(), body.Email, body.Password)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
