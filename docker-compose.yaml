@@ -1,13 +1,18 @@
 services:
   api:
-    build: ./api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
     environment:
       - CONFIG_PATH=./default.yaml
       - DATABASE_URL=postgres://moxie_owner:passwd@postgres:5432/moxie?sslmode=disable
       - HELIUS_API_KEY=${HELIUS_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     depends_on:
       postgres:
         condition: service_healthy
+    ports:
+      - "7654:7654"
     healthcheck:
       test:
         - CMD
@@ -24,9 +29,12 @@ services:
       - moxie-net
 
   ui:
-    build: ./ui
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
     environment:
       - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://api.localhost
     depends_on:
       api:
         condition: service_healthy
@@ -34,7 +42,9 @@ services:
       - moxie-net
 
   caddy:
-    build: ./caddy
+    build:
+      context: ./caddy
+      dockerfile: Dockerfile
     ports:
       - "80:80"
     depends_on:

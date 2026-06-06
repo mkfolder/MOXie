@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import { AuthProvider } from '@/context/auth_context'
 
 import { fontSans, fontMono } from '@/config/fonts'
 import '@/styles/globals.css'
@@ -8,7 +9,9 @@ import '@/styles/globals.css'
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <NextThemesProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
-      <Component {...pageProps} />
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
     </NextThemesProvider>
   )
 }

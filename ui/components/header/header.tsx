@@ -2,10 +2,10 @@ import { Avatar } from '@heroui/react'
 import { useHeader } from './use_header'
 
 export const Header = () => {
-  const { greeting, subtitle, balances } = useHeader()
+  const { greeting, subtitle, balances, email } = useHeader()
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-separator px-8">
+    <header className="border-separator flex h-16 items-center justify-between border-b px-8">
       <div>
         <h1 className="text-xl font-semibold">{greeting}</h1>
         <p className="text-muted text-sm">{subtitle}</p>
@@ -17,7 +17,7 @@ export const Header = () => {
           <p className="text-muted text-xs">${balances.usd}</p>
         </div>
         <Avatar color="accent" size="sm">
-          <Avatar.Fallback>U</Avatar.Fallback>
+          <Avatar.Fallback>{(email?.charAt(0) ?? 'U').toUpperCase()}</Avatar.Fallback>
         </Avatar>
       </div>
     </header>

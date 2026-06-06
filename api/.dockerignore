@@ -1,0 +1,11 @@
+.env
+.env.example
+.gitignore
+.git
+.next
+
+Makefile
+README.md
+
+volumes/
+node_modules/

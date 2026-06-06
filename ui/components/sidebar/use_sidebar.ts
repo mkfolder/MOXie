@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import { Home, Wallet, ShoppingCart, ArrowLeftRight, User } from 'lucide-react'
+import { useAuth } from '@/context/auth_context'
 import type { NavLink, SidebarUser } from './sidebar.types'
 
 const navLinks: NavLink[] = [
@@ -10,17 +11,18 @@ const navLinks: NavLink[] = [
   { label: 'Profile', href: '/profile', icon: User },
 ]
 
-const mockUser: SidebarUser = {
-  username: 'johndoe',
-  email: 'john@example.com',
-}
-
 export function useSidebar() {
   const { pathname } = useRouter()
+  const { merchant, logout } = useAuth()
+
+  const user: SidebarUser = merchant
+    ? { username: merchant.email.split('@')[0], email: merchant.email }
+    : { username: '', email: '' }
 
   return {
     navLinks,
-    user: mockUser,
+    user,
     pathname,
+    logout,
   }
 }

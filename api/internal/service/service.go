@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/gagliardetto/solana-go/rpc"
+	"github.com/google/uuid"
 	"github.com/mkfolder/moxie/internal/db"
 	"github.com/mkfolder/moxie/internal/helius"
 	"github.com/mkfolder/moxie/internal/models"
@@ -14,6 +16,12 @@ import (
 
 const memoProgramID = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
 
+type AuthConfig struct {
+	JWTSecret       string
+	AccessTokenTTL  time.Duration
+	RefreshTokenTTL time.Duration
+}
+
 type Service struct {
 	log       *zap.SugaredLogger
 	db        *gorm.DB
@@ -22,6 +30,7 @@ type Service struct {
 	rpc       *rpc.Client
 	orders    db.Repository[models.Order]
 	merchants db.Repository[models.Merchant]
+	authCfg   AuthConfig
 }
 
 type NewServiceParams struct {
@@ -30,6 +39,7 @@ type NewServiceParams struct {
 	HTTP   *http.Client
 	GormDB *gorm.DB
 	RPC    string
+	Auth   AuthConfig
 }
 
 func New(params NewServiceParams) *Service {
@@ -56,7 +66,12 @@ func New(params NewServiceParams) *Service {
 		orders:    ordersRepository,
 		merchants: merchantsRepository,
 		rpc:       rpcClient,
+		authCfg:   params.Auth,
 	}
+}
+
+func (s *Service) FindMerchantByID(ctx context.Context, id uuid.UUID) (*models.Merchant, error) {
+	return s.merchants.Find(ctx, id)
 }
 
 func (s *Service) PingDB(ctx context.Context) error {

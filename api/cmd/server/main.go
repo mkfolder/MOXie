@@ -70,7 +70,13 @@ func main() {
 		ServerHeader:  "MOXieServer",
 		AppName:       "MOXie",
 	})
-	api := app.Use(cors.New())
+
+	api := app.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:4321", "http://localhost"},
+		AllowCredentials: true,
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+	}))
 
 	httpClient := http.New(nil, nil, cfg.HTTP.Timeout)
 	hc := helius.NewClient(httpClient, webhookURL, apiKey, heliusNet)
@@ -81,10 +87,15 @@ func main() {
 		HC:     hc,
 		GormDB: gormDB,
 		RPC:    rpc.DevNet_RPC,
+		Auth: service.AuthConfig{
+			JWTSecret:       cfg.Auth.JWTSecret,
+			AccessTokenTTL:  cfg.Auth.AccessTokenTTL,
+			RefreshTokenTTL: cfg.Auth.RefreshTokenTTL,
+		},
 	}
 
 	s := service.New(params)
-	h := handler.New(s)
+	h := handler.New(s, cfg.Auth)
 	routes.Setup(api, h)
 
 	go func() {

@@ -16,6 +16,7 @@ type Config struct {
 	Postgres Postgres `yaml:"postgres"`
 	HTTP     HTTP     `yaml:"http"`
 	Workers  Workers  `yaml:"workers"`
+	Auth     Auth     `yaml:"auth"`
 }
 
 type Server struct {
@@ -35,6 +36,12 @@ type HTTP struct {
 type Workers struct {
 	CleanerInterval time.Duration `yaml:"cleaner_interval" env:"CLEANER_INTERVAL"`
 	OrderExpiration time.Duration `yaml:"order_expiration" env:"ORDER_EXPIRATION"`
+}
+
+type Auth struct {
+	JWTSecret       string        `yaml:"jwt_secret" env:"JWT_SECRET"`
+	AccessTokenTTL  time.Duration `yaml:"access_token_ttl" env:"ACCESS_TOKEN_TTL"`
+	RefreshTokenTTL time.Duration `yaml:"refresh_token_ttl" env:"REFRESH_TOKEN_TTL"`
 }
 
 func New(path string) (*Config, error) {
@@ -70,6 +77,18 @@ func New(path string) (*Config, error) {
 
 	if config.HTTP.Timeout == 0 {
 		return nil, errors.New("invalid http timeout")
+	}
+
+	if config.Auth.JWTSecret == "" {
+		return nil, errors.New("invalid jwt secret")
+	}
+
+	if config.Auth.AccessTokenTTL == 0 {
+		return nil, errors.New("invalid access token ttl")
+	}
+
+	if config.Auth.RefreshTokenTTL == 0 {
+		return nil, errors.New("invalid refresh token ttl")
 	}
 
 	return &config, nil

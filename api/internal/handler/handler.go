@@ -4,19 +4,26 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/mkfolder/moxie/internal/config"
 	"github.com/mkfolder/moxie/internal/service"
 )
 
 type Handler struct {
 	s         *service.Service
 	startedAt time.Time
+	authCfg   config.Auth
 }
 
-func New(s *service.Service) *Handler {
+func New(s *service.Service, authCfg config.Auth) *Handler {
 	return &Handler{
 		s:         s,
 		startedAt: time.Now().UTC(),
+		authCfg:   authCfg,
 	}
+}
+
+func (h *Handler) AuthCfg() config.Auth {
+	return h.authCfg
 }
 
 func (h *Handler) Health(c fiber.Ctx) error {

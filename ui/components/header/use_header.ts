@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router'
+import { useAuth } from '@/context/auth_context'
 import type { HeaderBalances } from './header.types'
 
 function getGreeting(): string {
@@ -25,10 +26,12 @@ const balances: HeaderBalances = {
 
 export function useHeader() {
   const { pathname } = useRouter()
+  const { merchant } = useAuth()
 
   return {
     greeting: getGreeting(),
     subtitle: subtitles[pathname] ?? 'Welcome',
     balances,
+    email: merchant?.email ?? '',
   }
 }

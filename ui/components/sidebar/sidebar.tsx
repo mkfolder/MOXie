@@ -5,7 +5,11 @@ import clsx from 'clsx'
 import { useSidebar } from './use_sidebar'
 
 export const Sidebar = () => {
-  const { navLinks, user, pathname } = useSidebar()
+  const { navLinks, user, pathname, logout } = useSidebar()
+
+  const handleLogout = async () => {
+    await logout()
+  }
 
   return (
     <aside className="bg-background fixed top-0 left-0 z-40 flex h-screen w-64 flex-col border-r">
@@ -13,7 +17,7 @@ export const Sidebar = () => {
         <div className="bg-primary flex h-9 w-9 items-center justify-center rounded-lg">
           <Sparkles size={18} className="text-primary-foreground" />
         </div>
-        <span className="text-xl font-bold tracking-tight">Moxie</span>
+        <span className="text-xl font-bold tracking-tight">MOXie</span>
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
@@ -57,7 +61,12 @@ export const Sidebar = () => {
           </div>
         </div>
 
-        <Button className="text-danger hover:bg-danger/10 w-full justify-start gap-3" size="sm" variant="ghost">
+        <Button
+          className="text-danger hover:bg-danger/10 w-full justify-start gap-3"
+          size="sm"
+          variant="ghost"
+          onPress={handleLogout}
+        >
           <LogOut size={20} />
           Logout
         </Button>

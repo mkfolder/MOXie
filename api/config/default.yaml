@@ -12,3 +12,8 @@ http:
 workers:
   cleaner_interval: 30m
   order_expiration: 24h
+
+auth:
+  jwt_secret: super-secret-key-change-in-production
+  access_token_ttl: 15m
+  refresh_token_ttl: 720h
