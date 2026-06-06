@@ -11,10 +11,8 @@ import (
 	"github.com/gagliardetto/solana-go/rpc"
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
-	"github.com/mkfolder/moxie/internal/common"
 	"github.com/mkfolder/moxie/internal/config"
 	"github.com/mkfolder/moxie/internal/handler"
-	"github.com/mkfolder/moxie/internal/helius"
 	"github.com/mkfolder/moxie/internal/log"
 	"github.com/mkfolder/moxie/internal/routes"
 	"github.com/mkfolder/moxie/internal/service"
@@ -40,12 +38,6 @@ func main() {
 	cfg, err := config.New(path)
 	if err != nil {
 		panic(err)
-	}
-
-	webhookURL := cfg.Server.WebhookURL
-	heliusNet := helius.HeliusNetMainnet
-	if cfg.Server.Environment == common.EnvironmentDevelopment {
-		heliusNet = helius.HeliusNetDevnet
 	}
 
 	// Log init
