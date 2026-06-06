@@ -20,7 +20,16 @@ type UpdateProfileRequest struct {
 	HeliusAPIKey *string `json:"helius_api_key"`
 }
 
-func (s *Service) UpdateMerchantProfile(ctx context.Context, merchantID uuid.UUID, req *UpdateProfileRequest) (*models.Merchant, error) {
+type ChangePasswordRequest struct {
+	CurrentPassword string `json:"current_password"`
+	NewPassword     string `json:"new_password"`
+}
+
+func (s *Service) UpdateMerchantProfile(
+	ctx context.Context,
+	merchantID uuid.UUID,
+	req *UpdateProfileRequest,
+) (*models.Merchant, error) {
 	merchant, err := s.FindMerchantByID(ctx, merchantID)
 	if err != nil {
 		return nil, err
@@ -73,12 +82,10 @@ func (s *Service) UpdateMerchantProfile(ctx context.Context, merchantID uuid.UUI
 		return nil, err
 	}
 
-	return merchant, nil
-}
+	isServiceEnabled := merchant.HeliusAPIKey != nil && merchant.WebhookURL != nil && merchant.Address != nil
+	merchant.IsServiceEnabled = isServiceEnabled
 
-type ChangePasswordRequest struct {
-	CurrentPassword string `json:"current_password"`
-	NewPassword     string `json:"new_password"`
+	return merchant, nil
 }
 
 func (s *Service) ChangePassword(ctx context.Context, merchantID uuid.UUID, req *ChangePasswordRequest) error {

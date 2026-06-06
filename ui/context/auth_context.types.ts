@@ -9,6 +9,7 @@ export interface Merchant {
   avatar_url?: string | null
   totp_enabled: boolean
   webhook_url?: string | null
+  is_service_enabled: boolean
   created_at: string
   updated_at: string
 }
@@ -28,6 +29,7 @@ export interface AuthContextValue {
   setupTwoFactor: (email: string, password: string) => Promise<{ secret: string; uri: string }>
   enableTwoFactor: (email: string, password: string, code: string) => Promise<void>
   logout: () => Promise<void>
+  refreshMerchant: () => Promise<void>
 }
 
 export interface AuthProviderProps {

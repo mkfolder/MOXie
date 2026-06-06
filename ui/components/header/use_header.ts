@@ -28,19 +28,17 @@ const balances: HeaderBalances = {
   usd: (42.5 * 165.32).toFixed(2),
 }
 
-function computeApiStatus(merchant: { address?: string | null; webhook_url?: string | null } | null): ApiStatus | null {
+function computeApiStatus(merchant: { is_service_enabled: boolean } | null): ApiStatus | null {
   if (!merchant) return null
 
-  const address_set = Boolean(merchant.address)
-  const webhook_set = Boolean(merchant.webhook_url)
-  const online = address_set && webhook_set
+  const online = merchant.is_service_enabled
 
   return {
     online,
-    address_set,
-    webhook_set,
+    address_set: false,
+    webhook_set: false,
     helius_configured: true,
-    label: online ? 'API Online' : 'API Offline',
+    label: online ? 'Online' : 'Offline',
   }
 }
 

@@ -9,7 +9,7 @@ import { Modal } from '@heroui/react'
 import { useOrderDetail } from './use_order_detail'
 
 function truncate(value: string): string {
-  if (value.length <= 16) return value
+  if (value.length <= 16 || value.includes('...')) return value
 
   return `${value.slice(0, 8)}...${value.slice(-6)}`
 }
@@ -52,7 +52,7 @@ export const OrderDetail = ({ order }: OrderDetailProps) => {
 
   return (
     <Modal.Root>
-      <Modal.Trigger className="text-muted hover:text-foreground cursor-pointer transition-colors">
+      <Modal.Trigger className="text-muted hover:text-foreground cursor-pointer transition-colors outline-none">
         <Eye size={16} />
       </Modal.Trigger>
       <Modal.Backdrop>

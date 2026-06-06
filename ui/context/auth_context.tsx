@@ -104,6 +104,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setupTwoFactor,
         enableTwoFactor,
         logout,
+        refreshMerchant: fetchMerchant,
       }}
     >
       {children}

@@ -5,22 +5,21 @@ import (
 	"strings"
 
 	"github.com/mkfolder/moxie/internal/common"
-	"github.com/mr-tron/base58/base58"
 	"gorm.io/gorm"
 )
 
 type Merchant struct {
 	BaseModel
-	APIKey       string  `json:"api_key" gorm:"unique;not null"`
-	Email        string  `json:"email" gorm:"unique;not null"`
-	Username     string  `json:"username" gorm:"not null"`
-	Address      *string `json:"address" gorm:"default:null"`
-	AvatarURL    *string `json:"avatar_url" gorm:"default:null"`
-	WebhookURL   *string `json:"webhook_url" gorm:"default:null"`
-	PasswdHash   []byte  `json:"-" gorm:"not null"`
-	HeliusAPIKey *string `json:"-" gorm:"default:null"`
-	TOTPSecret   string  `json:"-" gorm:"default:''"`
-	TOTPEnabled  bool    `json:"totp_enabled" gorm:"default:false"`
+	Email            string  `json:"email" gorm:"unique;not null"`
+	Username         string  `json:"username" gorm:"not null"`
+	Address          *string `json:"address" gorm:"default:null"`
+	AvatarURL        *string `json:"avatar_url" gorm:"default:null"`
+	IsServiceEnabled bool    `json:"is_service_enabled" gorm:"-"`
+	WebhookURL       *string `json:"webhook_url" gorm:"default:null"`
+	PasswdHash       []byte  `json:"-" gorm:"not null"`
+	HeliusAPIKey     *string `json:"-" gorm:"default:null"`
+	TOTPSecret       string  `json:"-" gorm:"default:''"`
+	TOTPEnabled      bool    `json:"totp_enabled" gorm:"default:false"`
 }
 
 func (m *Merchant) BeforeCreate(tx *gorm.DB) error {
@@ -37,9 +36,4 @@ func (m *Merchant) BeforeCreate(tx *gorm.DB) error {
 		return errors.New("invalid merchant password hash")
 	}
 	return nil
-}
-
-func (m *Merchant) AfterCreate(tx *gorm.DB) error {
-	m.APIKey = base58.Encode(m.ID[:])
-	return tx.Save(m).Error
 }

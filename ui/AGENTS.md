@@ -71,9 +71,7 @@ If a piece of logic can be named, extract it. Don't leave complex expressions in
 
 ```ts
 // ❌ Bad — logic buried inline
-const display_name = user.first_name
-  ? `${user.first_name} ${user.last_name}`.trim()
-  : user.email.split('@')[0]
+const display_name = user.first_name ? `${user.first_name} ${user.last_name}`.trim() : user.email.split('@')[0]
 
 // ✅ Good — extracted to lib/
 // lib/format_display_name.ts
@@ -369,8 +367,6 @@ export default function MyComponent() { ... }
 This applies to all components, hooks, and page files without exception.
 
 ---
-
-
 
 - Default to **Server Components**. Add `'use client'` only when you need interactivity or browser APIs.
 - Never put data fetching in a Client Component when a Server Component can do it.

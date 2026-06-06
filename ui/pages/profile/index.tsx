@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { User, Wallet, Eye, EyeOff, Loader2, CheckCircle, X, Trash2, ImagePlus, Lock, Camera } from 'lucide-react'
+import { User, Wallet, Eye, EyeOff, Loader2, CheckCircle, X, Trash2, Lock, Camera } from 'lucide-react'
 
 import DefaultLayout from '@/layouts/default'
 import { useAuth } from '@/context/auth_context'
+import { AvatarUpload } from '@/components/avatar_upload'
 import { updateProfile, changePassword, getHeliusKey } from '@/services/profile_service'
 
 /* ---------- types ---------- */
@@ -41,15 +42,13 @@ const getInitials = (name: string) => (name.match(/[^\s@]/g) ?? []).slice(0, 2).
 /* ---------- page ---------- */
 
 const ProfilePage = () => {
-  const { merchant, is_loading } = useAuth()
+  const { merchant, is_loading, refreshMerchant } = useAuth()
 
   /* profile fields */
   const [username, setUsername] = useState<FieldState>(freshField(''))
   const [avatar_url, setAvatarUrl] = useState<FieldState>(freshField(''))
   const [avatar_err, setAvatarErr] = useState(false)
   const [show_avatar_modal, setShowAvatarModal] = useState(false)
-  const [avatar_file, setAvatarFile] = useState<File | null>(null)
-  const [avatar_preview, setAvatarPreview] = useState<string | null>(null)
 
   /* password */
   const [pw_cur, setPwCur] = useState('')
@@ -112,6 +111,7 @@ const ProfilePage = () => {
     try {
       await updateProfile({ [k]: f.value || null })
       s(p => ({ ...p, original: p.value, is_dirty: false, is_saving: false, success: true }))
+      void refreshMerchant()
       setTimeout(() => s(p => ({ ...p, success: false })), 2500)
     } catch (err) {
       s(p => ({ ...p, is_saving: false, error: err instanceof Error ? err.message : 'Failed to save' }))
@@ -121,11 +121,30 @@ const ProfilePage = () => {
   const clearField = async (s: FieldSetter, k: keyof UpdateProfilePayload) => {
     s(p => ({ ...p, is_saving: true, error: null, success: false }))
     try {
-      await updateProfile({ [k]: null })
+      await updateProfile({ [k]: '' })
       s({ value: '', original: '', is_dirty: false, is_saving: false, error: null, success: true })
+      void refreshMerchant()
       setTimeout(() => s(p => ({ ...p, success: false })), 2500)
     } catch (err) {
       s(p => ({ ...p, is_saving: false, error: err instanceof Error ? err.message : 'Failed to clear' }))
+    }
+  }
+
+  const handleAvatarSave = async (url: string) => {
+    if (url !== avatar_url.original) {
+      const updated = await updateProfile({ avatar_url: url || null })
+
+      setAvatarUrl(p => ({
+        ...p,
+        value: updated.avatar_url ?? '',
+        original: updated.avatar_url ?? '',
+        is_dirty: false,
+        is_saving: false,
+        error: null,
+        success: true,
+      }))
+      void refreshMerchant()
+      setTimeout(() => setAvatarUrl(p => ({ ...p, success: false })), 2500)
     }
   }
 
@@ -164,11 +183,11 @@ const ProfilePage = () => {
 
   const ActionButtons = ({
     field,
-    key,
+    fieldKey,
     setter,
   }: {
     field: FieldState
-    key: keyof UpdateProfilePayload
+    fieldKey: keyof UpdateProfilePayload
     setter: FieldSetter
   }) => {
     if (field.is_saving)
@@ -190,7 +209,7 @@ const ProfilePage = () => {
           <button
             className="bg-accent hover:bg-accent/90 flex h-10 cursor-pointer items-center rounded-xl px-4 text-xs font-medium text-white transition-all active:scale-[0.98]"
             type="button"
-            onClick={() => saveField(field, setter, key)}
+            onClick={() => saveField(field, setter, fieldKey)}
           >
             Save
           </button>
@@ -231,8 +250,6 @@ const ProfilePage = () => {
     return null
   }
 
-  void avatar_file
-
   if (is_loading)
     return (
       <DefaultLayout>
@@ -265,15 +282,7 @@ const ProfilePage = () => {
                 <div>
                   <p className="mb-1.5 block text-xs font-medium tracking-wide text-white/50 uppercase">Avatar</p>
                   <div className="group relative inline-block">
-                    <button
-                      className="cursor-pointer"
-                      type="button"
-                      onClick={() => {
-                        setAvatarFile(null)
-                        setAvatarPreview(null)
-                        setShowAvatarModal(true)
-                      }}
-                    >
+                    <button className="cursor-pointer" type="button" onClick={() => setShowAvatarModal(true)}>
                       {avatar_url.value && !avatar_err ? (
                         <img
                           alt=""
@@ -321,7 +330,7 @@ const ProfilePage = () => {
                       value={username.value}
                       onChange={e => upd(setUsername, e.target.value)}
                     />
-                    <ActionButtons key="username" field={username} setter={setUsername} />
+                    <ActionButtons field={username} fieldKey="username" setter={setUsername} />
                   </div>
                   {(username.error || (!username.value.trim() && !username.error)) && (
                     <p className="text-danger mt-1.5 text-xs">{username.error || 'Username cannot be empty'}</p>
@@ -424,7 +433,7 @@ const ProfilePage = () => {
                     onChange={e => upd(setAddress, e.target.value)}
                   />
                   <ClearBtn field={address} fieldKey="address" setter={setAddress} />
-                  <ActionButtons key="address" field={address} setter={setAddress} />
+                  <ActionButtons field={address} fieldKey="address" setter={setAddress} />
                 </div>
                 {address.error && <p className="text-danger mt-1.5 text-xs">{address.error}</p>}
               </div>
@@ -464,7 +473,7 @@ const ProfilePage = () => {
                     </button>
                   </div>
                   <ClearBtn field={helius_api_key} fieldKey="helius_api_key" setter={setHeliusApiKey} />
-                  <ActionButtons key="helius_api_key" field={helius_api_key} setter={setHeliusApiKey} />
+                  <ActionButtons field={helius_api_key} fieldKey="helius_api_key" setter={setHeliusApiKey} />
                 </div>
                 {helius_api_key.error && <p className="text-danger mt-1.5 text-xs">{helius_api_key.error}</p>}
               </div>
@@ -492,7 +501,7 @@ const ProfilePage = () => {
                     onChange={e => upd(setWebhookUrl, e.target.value)}
                   />
                   <ClearBtn field={webhook_url} fieldKey="webhook_url" setter={setWebhookUrl} />
-                  <ActionButtons key="webhook_url" field={webhook_url} setter={setWebhookUrl} />
+                  <ActionButtons field={webhook_url} fieldKey="webhook_url" setter={setWebhookUrl} />
                 </div>
                 {webhook_url.error && <p className="text-danger mt-1.5 text-xs">{webhook_url.error}</p>}
               </div>
@@ -501,127 +510,13 @@ const ProfilePage = () => {
         </div>
       </DefaultLayout>
 
-      {/* avatar upload modal */}
-      {show_avatar_modal && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-          role="presentation"
-          onClick={e => {
-            if (e.target === e.currentTarget) setShowAvatarModal(false)
-          }}
-          onKeyDown={e => {
-            if (e.key === 'Escape') setShowAvatarModal(false)
-          }}
-        >
-          <div aria-modal="true" className="bg-surface mx-4 w-full max-w-sm rounded-2xl p-6 shadow-2xl" role="dialog">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-base font-semibold">Set profile picture</h2>
-              <button
-                className="cursor-pointer text-white/30 hover:text-white/60"
-                type="button"
-                onClick={() => setShowAvatarModal(false)}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            <div className="mb-6 flex justify-center">
-              {avatar_preview ? (
-                <img
-                  alt="Preview"
-                  className="h-32 w-32 rounded-full border-2 border-white/10 object-cover"
-                  src={avatar_preview}
-                />
-              ) : avatar_url.value && !avatar_err ? (
-                <img
-                  alt="Current"
-                  className="h-32 w-32 rounded-full border-2 border-white/10 object-cover"
-                  src={avatar_url.value}
-                  onError={() => setAvatarErr(true)}
-                />
-              ) : (
-                <div className="flex h-32 w-32 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-2xl font-bold text-white">
-                  {getInitials(username.value || merchant?.username || '?')}
-                </div>
-              )}
-            </div>
-
-            <label
-              className="mb-1.5 block text-xs font-medium tracking-wide text-white/50 uppercase"
-              htmlFor="image-url"
-            >
-              Image URL
-            </label>
-            <input
-              className="focus:border-accent/50 mb-4 h-10 w-full rounded-xl border border-white/10 bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06]"
-              id="image-url"
-              placeholder="https://example.com/avatar.jpg"
-              value={avatar_url.value}
-              onChange={e => {
-                setAvatarErr(false)
-                upd(setAvatarUrl, e.target.value)
-              }}
-            />
-
-            <div className="relative mb-1.5">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-white/10" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-surface text-muted px-2 text-xs">or</span>
-              </div>
-            </div>
-
-            <label className="bg-accent hover:bg-accent/90 flex cursor-pointer items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium text-white transition-all active:scale-[0.98]">
-              <ImagePlus size={18} />
-              Upload image
-              <input
-                accept="image/*"
-                className="hidden"
-                type="file"
-                onChange={e => {
-                  const file = e.target.files?.[0]
-
-                  if (!file) return
-                  setAvatarFile(file)
-                  setAvatarPreview(URL.createObjectURL(file))
-                }}
-              />
-            </label>
-            <p className="text-muted mt-1.5 text-center text-xs">PNG, JPG, GIF up to 5MB</p>
-
-            <div className="mt-5 flex gap-2">
-              <button
-                className="flex flex-1 cursor-pointer items-center justify-center rounded-xl border border-white/10 py-2.5 text-sm font-medium text-white/60 transition-all hover:bg-white/[0.05]"
-                type="button"
-                onClick={() => {
-                  setAvatarUrl(freshField(avatar_url.original))
-                  setAvatarPreview(null)
-                  setAvatarFile(null)
-                  setShowAvatarModal(false)
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                className="bg-accent hover:bg-accent/90 flex flex-1 cursor-pointer items-center justify-center rounded-xl py-2.5 text-sm font-medium text-white transition-all active:scale-[0.98]"
-                type="button"
-                onClick={async () => {
-                  /* TODO: upload avatar_file to backend when ready */
-                  if (avatar_url.is_dirty) {
-                    await saveField(avatar_url, setAvatarUrl, 'avatar_url')
-                  }
-                  setAvatarPreview(null)
-                  setAvatarFile(null)
-                  setShowAvatarModal(false)
-                }}
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AvatarUpload
+        initialUrl={avatar_url.value}
+        isOpen={show_avatar_modal}
+        username={username.value || merchant?.username || '?'}
+        onOpenChange={setShowAvatarModal}
+        onSave={handleAvatarSave}
+      />
     </>
   )
 }

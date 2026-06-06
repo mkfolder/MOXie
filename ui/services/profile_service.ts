@@ -1,5 +1,6 @@
-import { api } from '@/lib/api'
 import type { Merchant } from '@/context/auth_context.types'
+
+import { api } from '@/lib/api'
 
 export interface UpdateProfileRequest {
   username?: string | null

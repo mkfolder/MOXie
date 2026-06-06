@@ -1,6 +1,6 @@
 import NextLink from 'next/link'
 import { BookOpen, LogOut, Sparkles } from 'lucide-react'
-import { Button, Avatar, Separator } from '@heroui/react'
+import { Avatar } from '@heroui/react'
 import clsx from 'clsx'
 
 import { useSidebar } from './use_sidebar'
@@ -50,9 +50,12 @@ export const Sidebar = () => {
           Documentation
         </NextLink>
 
-        <Separator className="mb-4" />
+        <hr className="border-separator -mx-4 mb-4" />
 
-        <div className="mb-4 flex items-center gap-3 px-3">
+        <NextLink
+          className="hover:bg-surface mb-4 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors"
+          href="/profile"
+        >
           <Avatar color="accent" size="sm">
             <Avatar.Fallback>{user.username.charAt(0).toUpperCase()}</Avatar.Fallback>
           </Avatar>
@@ -60,17 +63,16 @@ export const Sidebar = () => {
             <p className="truncate text-sm font-medium">{user.username}</p>
             <p className="text-muted truncate text-xs">{user.email}</p>
           </div>
-        </div>
+        </NextLink>
 
-        <Button
-          className="text-danger hover:bg-danger/10 w-full justify-start gap-3"
-          size="sm"
-          variant="ghost"
-          onPress={handleLogout}
+        <button
+          className="text-danger hover:bg-danger/10 flex w-full cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
+          type="button"
+          onClick={handleLogout}
         >
           <LogOut size={20} />
           Logout
-        </Button>
+        </button>
       </div>
     </aside>
   )

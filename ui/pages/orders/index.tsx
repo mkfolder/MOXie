@@ -82,11 +82,12 @@ const OrdersPage = () => {
         </div>
 
         <div className="bg-surface rounded-2xl">
-          <div className="text-muted grid grid-cols-5 gap-4 border-b px-6 py-4 text-xs font-medium tracking-wider uppercase">
+          <div className="text-muted grid grid-cols-6 gap-4 border-b px-6 py-4 text-xs font-medium tracking-wider uppercase">
             <span>Order</span>
             <span>Customer</span>
             <span>Amount</span>
             <span>Status</span>
+            <span>Transaction</span>
             <span className="text-right">Action</span>
           </div>
           {orders.map(order => {
@@ -95,7 +96,7 @@ const OrdersPage = () => {
             const customer = order.address
 
             return (
-              <div key={order.id} className="grid grid-cols-5 items-center gap-4 px-6 py-4">
+              <div key={order.id} className="grid grid-cols-6 items-center gap-4 px-6 py-4">
                 <div className="flex items-center gap-3">
                   <div className="bg-warning/10 flex h-8 w-8 items-center justify-center rounded-lg">
                     <Package className="text-warning" size={16} />
@@ -105,6 +106,9 @@ const OrdersPage = () => {
                 <span className="font-mono text-sm">{customer}</span>
                 <span className="text-sm font-semibold">{amount_sol} SOL</span>
                 <span className={`w-fit rounded-full px-2.5 py-0.5 text-xs font-medium ${style}`}>{label}</span>
+                <span className="font-mono text-sm">
+                  {order.tx_hash ? order.tx_hash : <span className="text-white/20">—</span>}
+                </span>
                 <div className="flex justify-end">
                   <OrderDetail order={order} />
                 </div>

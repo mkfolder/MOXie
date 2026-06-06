@@ -37,6 +37,9 @@ func (s *Service) RegisterMerchant(
 		return nil, fmt.Errorf("failed to register new merchant: %w", err)
 	}
 
+	isServiceEnabled := merchant.HeliusAPIKey != nil && merchant.WebhookURL != nil && merchant.Address != nil
+	merchant.IsServiceEnabled = isServiceEnabled
+
 	return &merchant, nil
 }
 
@@ -54,6 +57,9 @@ func (s *Service) AuthMerchant(ctx context.Context, email, password string) (*Lo
 	if merchant.TOTPEnabled {
 		return &LoginResult{NeedTwoFA: true}, nil
 	}
+
+	isServiceEnabled := merchant.HeliusAPIKey != nil && merchant.WebhookURL != nil && merchant.Address != nil
+	merchant.IsServiceEnabled = isServiceEnabled
 
 	resp, err := s.GenerateTokens(ctx, &merchant)
 	if err != nil {
@@ -132,6 +138,9 @@ func (s *Service) VerifyTOTPAndAuth(ctx context.Context, email, password, code s
 			return nil, fmt.Errorf("failed to enable totp: %w", err)
 		}
 	}
+
+	isServiceEnabled := merchant.HeliusAPIKey != nil && merchant.WebhookURL != nil && merchant.Address != nil
+	merchant.IsServiceEnabled = isServiceEnabled
 
 	return s.GenerateTokens(ctx, &merchant)
 }

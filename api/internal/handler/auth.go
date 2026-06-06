@@ -101,6 +101,8 @@ func (h *Handler) Me(c fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "merchant not found"})
 	}
 
+	isServiceEnabled := merchant.HeliusAPIKey != nil && merchant.WebhookURL != nil && merchant.Address != nil
+	merchant.IsServiceEnabled = isServiceEnabled
 	return c.JSON(merchant)
 }
 

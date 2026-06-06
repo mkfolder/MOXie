@@ -4,12 +4,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --font-sans: var(--font-sans);
-    --font-mono: var(--font-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 .recharts-responsive-container,
 .recharts-wrapper,
 .recharts-surface {
-    outline: none !important;
+  outline: none !important;
 }

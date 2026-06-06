@@ -14,6 +14,8 @@ import {
 } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
+import { useRouter } from 'next/router'
+
 import DefaultLayout from '@/layouts/default'
 
 const stats = [
@@ -61,6 +63,8 @@ const chartData = [
 ]
 
 const IndexPage = () => {
+  const router = useRouter()
+
   return (
     <DefaultLayout>
       <div className="flex flex-col gap-6">
@@ -135,7 +139,12 @@ const IndexPage = () => {
           <div className="bg-surface rounded-2xl p-6">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-base font-semibold">Recent Transactions</h2>
-              <button className="text-accent text-xs font-medium hover:underline">View all</button>
+              <button
+                className="text-accent cursor-pointer text-xs font-medium hover:underline"
+                onClick={() => router.push('/transactions')}
+              >
+                View all
+              </button>
             </div>
             <div className="flex flex-col">
               {[
