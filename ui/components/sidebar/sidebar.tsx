@@ -1,5 +1,5 @@
 import NextLink from 'next/link'
-import { BookOpen, LogOut } from 'lucide-react'
+import { BookOpen, LogOut, Sparkles } from 'lucide-react'
 import { Button, Avatar, Separator } from '@heroui/react'
 import clsx from 'clsx'
 import { useSidebar } from './use_sidebar'
@@ -9,11 +9,11 @@ export const Sidebar = () => {
 
   return (
     <aside className="bg-background fixed top-0 left-0 z-40 flex h-screen w-64 flex-col border-r">
-      <div className="border-separator flex h-16 items-center gap-2.5 border-b px-6">
-        <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold">
-          M
+      <div className="border-separator flex h-16 items-center gap-3 border-b px-6">
+        <div className="bg-primary flex h-9 w-9 items-center justify-center rounded-lg">
+          <Sparkles size={18} className="text-primary-foreground" />
         </div>
-        <span className="text-lg font-semibold">Moxie</span>
+        <span className="text-xl font-bold tracking-tight">Moxie</span>
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
@@ -25,7 +25,7 @@ export const Sidebar = () => {
               key={href}
               className={clsx(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                isActive ? 'bg-primary/10 text-primary' : 'text-muted hover:bg-surface hover:text-foreground',
+                isActive ? 'bg-surface text-primary' : 'text-muted hover:bg-surface hover:text-foreground',
               )}
               href={href}
             >
@@ -39,7 +39,7 @@ export const Sidebar = () => {
       <div className="border-separator border-t p-4">
         <NextLink
           className="text-muted hover:bg-surface hover:text-foreground mb-4 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors"
-          href="/docs"
+          href="/404"
         >
           <BookOpen size={20} />
           Documentation

@@ -11,7 +11,7 @@ function getGreeting(): string {
 
 const subtitles: Record<string, string> = {
   '/': 'Your command center',
-  '/webhooks': 'Stay in sync with the world',
+  '/addresses': 'Manage your addresses',
   '/orders': 'From incoming to delivered',
   '/transactions': 'Every SOL accounted for',
   '/profile': 'All about you',
