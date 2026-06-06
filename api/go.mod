@@ -1,4 +1,4 @@
-module github.com/Makefolder/moxie
+module github.com/mkfolder/moxie
 
 go 1.25.1
 

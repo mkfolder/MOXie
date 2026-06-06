@@ -4,8 +4,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Makefolder/moxie/internal/config"
-	"github.com/Makefolder/moxie/internal/models"
+	"github.com/mkfolder/moxie/internal/config"
+	"github.com/mkfolder/moxie/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

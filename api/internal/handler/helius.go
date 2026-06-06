@@ -3,8 +3,8 @@ package handler
 import (
 	"encoding/json"
 
-	"github.com/Makefolder/moxie/internal/helius"
 	"github.com/gofiber/fiber/v3"
+	"github.com/mkfolder/moxie/internal/helius"
 )
 
 func (h *Handler) HeliusWebhook(c fiber.Ctx) error {

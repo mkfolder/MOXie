@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Makefolder/moxie/internal/service"
+	"github.com/mkfolder/moxie/internal/service"
 	"go.uber.org/zap"
 )
 

@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 
-	"github.com/Makefolder/moxie/internal/db"
-	"github.com/Makefolder/moxie/internal/helius"
-	"github.com/Makefolder/moxie/internal/models"
-	"github.com/Makefolder/moxie/pkg/http"
 	"github.com/gagliardetto/solana-go/rpc"
+	"github.com/mkfolder/moxie/internal/db"
+	"github.com/mkfolder/moxie/internal/helius"
+	"github.com/mkfolder/moxie/internal/models"
+	"github.com/mkfolder/moxie/pkg/http"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )

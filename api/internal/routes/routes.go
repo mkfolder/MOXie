@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"github.com/Makefolder/moxie/internal/handler"
 	"github.com/gofiber/fiber/v3"
+	"github.com/mkfolder/moxie/internal/handler"
 )
 
 func Setup(r fiber.Router, h *handler.Handler) {

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/url"
 
-	"github.com/Makefolder/moxie/internal/common"
 	"github.com/gofiber/fiber/v3"
+	"github.com/mkfolder/moxie/internal/common"
 )
 
 type AuthRequest struct {

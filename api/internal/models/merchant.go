@@ -3,7 +3,7 @@ package models
 import (
 	"errors"
 
-	"github.com/Makefolder/moxie/internal/common"
+	"github.com/mkfolder/moxie/internal/common"
 	"github.com/mr-tron/base58/base58"
 	"gorm.io/gorm"
 )

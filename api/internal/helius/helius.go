@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/url"
 
-	"github.com/Makefolder/moxie/pkg/http"
+	"github.com/mkfolder/moxie/pkg/http"
 )
 
 type HeliusNet string

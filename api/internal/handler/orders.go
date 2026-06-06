@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Makefolder/moxie/internal/constants"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
+	"github.com/mkfolder/moxie/internal/constants"
 )
 
 func (h *Handler) FindAll(c fiber.Ctx) error {

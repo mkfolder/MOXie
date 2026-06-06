@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/Makefolder/moxie/internal/models"
+	"github.com/mkfolder/moxie/internal/models"
 	"github.com/mr-tron/base58/base58"
 	"golang.org/x/crypto/bcrypt"
 )

@@ -3,8 +3,8 @@ package handler
 import (
 	"time"
 
-	"github.com/Makefolder/moxie/internal/service"
 	"github.com/gofiber/fiber/v3"
+	"github.com/mkfolder/moxie/internal/service"
 )
 
 type Handler struct {

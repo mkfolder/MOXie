@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/Makefolder/moxie/internal/helius"
-	"github.com/Makefolder/moxie/internal/models"
-	"github.com/Makefolder/moxie/pkg/http"
 	"github.com/google/uuid"
+	"github.com/mkfolder/moxie/internal/helius"
+	"github.com/mkfolder/moxie/internal/models"
+	"github.com/mkfolder/moxie/pkg/http"
 	"github.com/mr-tron/base58/base58"
 )
 

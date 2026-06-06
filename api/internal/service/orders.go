@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/Makefolder/moxie/internal/models"
 	"github.com/google/uuid"
+	"github.com/mkfolder/moxie/internal/models"
 )
 
 func (s *Service) FindAll(ctx context.Context) ([]models.Order, error) {

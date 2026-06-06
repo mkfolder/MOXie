@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/Makefolder/moxie/internal/common"
 	"github.com/caarlos0/env/v10"
+	"github.com/mkfolder/moxie/internal/common"
 	"go.yaml.in/yaml/v3"
 )
 

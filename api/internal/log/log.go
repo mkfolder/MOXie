@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/Makefolder/moxie/internal/common"
+	"github.com/mkfolder/moxie/internal/common"
 	"go.uber.org/zap"
 )
 

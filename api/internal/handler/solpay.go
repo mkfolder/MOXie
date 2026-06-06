@@ -4,10 +4,10 @@ import (
 	"encoding/base64"
 	"fmt"
 
-	"github.com/Makefolder/moxie/internal/constants"
 	"github.com/gagliardetto/solana-go"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
+	"github.com/mkfolder/moxie/internal/constants"
 )
 
 type SolPayMetadata struct {
