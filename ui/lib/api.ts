@@ -61,6 +61,13 @@ export const api = {
     }).then(handleResponse<T>)
   },
 
+  put<T>(path: string, body?: unknown): Promise<T> {
+    return request(path, {
+      method: 'PUT',
+      body: body ? JSON.stringify(body) : undefined,
+    }).then(handleResponse<T>)
+  },
+
   raw(path: string, options?: RequestInit): Promise<Response> {
     return request(path, options)
   },

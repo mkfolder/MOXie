@@ -21,6 +21,11 @@ func Setup(r fiber.Router, h *handler.Handler) {
 
 	protected.Get("/auth/me", h.Me)
 
+	profile := protected.Group("/profile")
+	profile.Put("/update", h.UpdateProfile)
+	profile.Put("/password", h.ChangePassword)
+	profile.Get("/helius-key", h.GetHeliusKey)
+
 	orders := protected.Group("/orders")
 	orders.Get("/find-all", h.FindAll)
 	orders.Get("/find/:id", h.FindOrder)

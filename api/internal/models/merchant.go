@@ -15,6 +15,7 @@ type Merchant struct {
 	Email        string  `json:"email" gorm:"unique;not null"`
 	Username     string  `json:"username" gorm:"not null"`
 	Address      *string `json:"address" gorm:"default:null"`
+	AvatarURL    *string `json:"avatar_url" gorm:"default:null"`
 	WebhookURL   *string `json:"webhook_url" gorm:"default:null"`
 	PasswdHash   []byte  `json:"-" gorm:"not null"`
 	HeliusAPIKey *string `json:"-" gorm:"default:null"`

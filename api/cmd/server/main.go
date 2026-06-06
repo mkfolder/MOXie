@@ -76,6 +76,7 @@ func main() {
 			JWTSecret:       cfg.Auth.JWTSecret,
 			AccessTokenTTL:  cfg.Auth.AccessTokenTTL,
 			RefreshTokenTTL: cfg.Auth.RefreshTokenTTL,
+			EncryptionKey:   cfg.Auth.EncryptionKey,
 		},
 	}
 

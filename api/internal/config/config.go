@@ -42,6 +42,7 @@ type Auth struct {
 	JWTSecret       string        `yaml:"jwt_secret" env:"JWT_SECRET"`
 	AccessTokenTTL  time.Duration `yaml:"access_token_ttl" env:"ACCESS_TOKEN_TTL"`
 	RefreshTokenTTL time.Duration `yaml:"refresh_token_ttl" env:"REFRESH_TOKEN_TTL"`
+	EncryptionKey   string        `yaml:"encryption_key" env:"ENCRYPTION_KEY"`
 }
 
 func New(path string) (*Config, error) {
@@ -89,6 +90,10 @@ func New(path string) (*Config, error) {
 
 	if config.Auth.RefreshTokenTTL == 0 {
 		return nil, errors.New("invalid refresh token ttl")
+	}
+
+	if config.Auth.EncryptionKey == "" {
+		return nil, errors.New("invalid encryption key")
 	}
 
 	return &config, nil

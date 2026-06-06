@@ -19,6 +19,7 @@ type AuthConfig struct {
 	JWTSecret       string
 	AccessTokenTTL  time.Duration
 	RefreshTokenTTL time.Duration
+	EncryptionKey   string
 }
 
 type Service struct {

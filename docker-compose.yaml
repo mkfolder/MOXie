@@ -7,6 +7,7 @@ services:
       - CONFIG_PATH=./default.yaml
       - DATABASE_URL=postgres://moxie_owner:passwd@postgres:5432/moxie?sslmode=disable
       - JWT_SECRET=${JWT_SECRET}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     depends_on:
       postgres:
         condition: service_healthy
