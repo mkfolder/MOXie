@@ -30,11 +30,6 @@ func main() {
 		panic("CONFIG_PATH environment variable not set")
 	}
 
-	apiKey := os.Getenv("HELIUS_API_KEY")
-	if apiKey == "" {
-		panic("HELIUS_API_KEY environment variable not set")
-	}
-
 	cfg, err := config.New(path)
 	if err != nil {
 		panic(err)

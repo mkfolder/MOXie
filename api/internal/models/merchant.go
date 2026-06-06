@@ -11,15 +11,15 @@ import (
 
 type Merchant struct {
 	BaseModel
-	APIKey      string  `json:"api_key" gorm:"unique;not null"`
-	Email       string  `json:"email" gorm:"unique;not null"`
-	Username    string  `json:"username" gorm:"not null"`
-	Address     *string `json:"address" gorm:"default:null"`
-	PasswdHash  []byte  `json:"-" gorm:"not null"`
-	HCAPIKey    *string `json:"hc_api_key" gorm:"default:null"`
-	WebhookURL  *string `json:"webhook_url" gorm:"default:null"`
-	TOTPSecret  string  `json:"-" gorm:"default:''"`
-	TOTPEnabled bool    `json:"totp_enabled" gorm:"default:false"`
+	APIKey       string  `json:"api_key" gorm:"unique;not null"`
+	Email        string  `json:"email" gorm:"unique;not null"`
+	Username     string  `json:"username" gorm:"not null"`
+	Address      *string `json:"address" gorm:"default:null"`
+	WebhookURL   *string `json:"webhook_url" gorm:"default:null"`
+	PasswdHash   []byte  `json:"-" gorm:"not null"`
+	HeliusAPIKey *string `json:"-" gorm:"default:null"`
+	TOTPSecret   string  `json:"-" gorm:"default:''"`
+	TOTPEnabled  bool    `json:"totp_enabled" gorm:"default:false"`
 }
 
 func (m *Merchant) BeforeCreate(tx *gorm.DB) error {
