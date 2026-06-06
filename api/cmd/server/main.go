@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Makefolder/moxie/internal/common"
 	"github.com/Makefolder/moxie/internal/config"
 	"github.com/Makefolder/moxie/internal/handler"
 	"github.com/Makefolder/moxie/internal/helius"
@@ -24,16 +25,16 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-const (
-	apiKey    string           = "569dbc7b-d716-4219-aa73-7580f65b3011"
-	heliusNet helius.HeliusNet = helius.HeliusNetMainnet
-)
-
 func main() {
 	// Config init
 	path := os.Getenv("CONFIG_PATH")
 	if path == "" {
 		panic("CONFIG_PATH environment variable not set")
+	}
+
+	apiKey := os.Getenv("HELIUS_API_KEY")
+	if apiKey == "" {
+		panic("HELIUS_API_KEY environment variable not set")
 	}
 
 	cfg, err := config.New(path)
@@ -42,6 +43,10 @@ func main() {
 	}
 
 	webhookURL := cfg.Server.WebhookURL
+	heliusNet := helius.HeliusNetMainnet
+	if cfg.Server.Environment == common.EnvironmentDevelopment {
+		heliusNet = helius.HeliusNetDevnet
+	}
 
 	// Log init
 	log, err := log.New(cfg.Server.Environment)

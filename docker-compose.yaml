@@ -4,6 +4,7 @@ services:
     environment:
       - CONFIG_PATH=./default.yaml
       - DATABASE_URL=postgres://moxie_owner:passwd@postgres:5432/moxie?sslmode=disable
+      - HELIUS_API_KEY=${HELIUS_API_KEY}
     depends_on:
       postgres:
         condition: service_healthy

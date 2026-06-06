@@ -7,7 +7,7 @@ import '@/styles/globals.css'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <NextThemesProvider attribute="class" defaultTheme="light">
+    <NextThemesProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
       <Component {...pageProps} />
     </NextThemesProvider>
   )

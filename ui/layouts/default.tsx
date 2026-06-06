@@ -1,25 +1,20 @@
 import { Head } from './head'
-
-import { Navbar } from '@/components/navbar'
+import { Sidebar } from '@/components/sidebar'
+import { Header } from '@/components/header'
 
 export default function DefaultLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="relative flex h-screen flex-col">
+    <div className="relative flex h-screen">
       <Head />
-      <Navbar />
-      <main className="container mx-auto max-w-7xl flex-grow px-6 pt-16">{children}</main>
-      <footer className="flex w-full items-center justify-center py-3">
-        <a
-          className="flex items-center gap-1 text-current no-underline"
-          href="https://www.heroui.com"
-          rel="noopener noreferrer"
-          target="_blank"
-          title="heroui.com homepage"
-        >
-          <span className="text-muted">Powered by</span>
-          <p className="text-accent">HeroUI</p>
-        </a>
-      </footer>
+      <Sidebar />
+      <main className="ml-64 flex flex-1 flex-col overflow-y-auto">
+        <Header />
+        <div className="flex-1 p-8">{children}</div>
+        <footer className="border-separator mt-auto flex items-center justify-between border-t px-8 py-4">
+          <p className="text-muted text-xs">Powered by Moxie</p>
+          <p className="text-muted text-xs">&copy; {new Date().getFullYear()} Moxie</p>
+        </footer>
+      </main>
     </div>
   )
 }
