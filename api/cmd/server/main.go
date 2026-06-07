@@ -23,6 +23,15 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+const (
+	maxOpenConns    = 25
+	maxIdleConns    = 5
+	connMaxLifetime = time.Hour
+)
+
+// todo!: should be configured via config
+var allowedOrigins = []string{"http://localhost:4321", "http://localhost"}
+
 func main() {
 	// Config init
 	path := os.Getenv("CONFIG_PATH")
@@ -50,6 +59,11 @@ func main() {
 		panic(err)
 	}
 
+	sqlDB, err := gormDB.DB()
+	sqlDB.SetMaxOpenConns(maxOpenConns)
+	sqlDB.SetMaxIdleConns(maxIdleConns)
+	sqlDB.SetConnMaxLifetime(connMaxLifetime)
+
 	// App init
 	app := fiber.New(fiber.Config{
 		CaseSensitive: false,
@@ -59,7 +73,7 @@ func main() {
 	})
 
 	api := app.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:4321", "http://localhost"},
+		AllowOrigins:     allowedOrigins,
 		AllowCredentials: true,
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
