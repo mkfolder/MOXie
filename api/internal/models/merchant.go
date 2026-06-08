@@ -13,7 +13,7 @@ type Merchant struct {
 	Email            string  `json:"email" gorm:"unique;not null"`
 	Username         string  `json:"username" gorm:"not null"`
 	Address          *string `json:"address" gorm:"default:null"`
-	AvatarURL        *string `json:"avatar_url" gorm:"default:null"`
+	PictureURL       *string `json:"picture_url" gorm:"default:null"`
 	IsServiceEnabled bool    `json:"is_service_enabled" gorm:"-"`
 	WebhookURL       *string `json:"webhook_url" gorm:"default:null"`
 	PasswdHash       []byte  `json:"-" gorm:"not null"`

@@ -6,7 +6,7 @@ export interface Merchant {
   api_key: string
   username: string
   address?: string | null
-  avatar_url?: string | null
+  picture_url?: string | null
   totp_enabled: boolean
   webhook_url?: string | null
   is_service_enabled: boolean

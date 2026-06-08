@@ -4,7 +4,7 @@ import clsx from 'clsx'
 import { useHeader } from './use_header'
 
 export const Header = () => {
-  const { greeting, subtitle, balances, email, api_status } = useHeader()
+  const { greeting, subtitle, balances, email, picture_url, api_status } = useHeader()
 
   return (
     <header className="border-separator flex h-16 items-center justify-between border-b px-8">
@@ -46,9 +46,13 @@ export const Header = () => {
           <p className="text-sm font-medium">{balances.sol} SOL</p>
           <p className="text-muted text-xs">${balances.usd}</p>
         </div>
-        <Avatar color="accent" size="sm">
-          <Avatar.Fallback>{(email?.charAt(0) ?? 'U').toUpperCase()}</Avatar.Fallback>
-        </Avatar>
+        {picture_url ? (
+          <img alt="" className="h-8 w-8 rounded-full object-cover" src={`${picture_url}?view=1`} />
+        ) : (
+          <Avatar color="accent" size="sm">
+            <Avatar.Fallback>{(email?.charAt(0) ?? 'U').toUpperCase()}</Avatar.Fallback>
+          </Avatar>
+        )}
       </div>
     </header>
   )

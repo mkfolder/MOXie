@@ -9,6 +9,7 @@ import (
 	"github.com/mkfolder/moxie/internal/db"
 	"github.com/mkfolder/moxie/internal/models"
 	"github.com/mkfolder/moxie/pkg/http"
+	"github.com/mkfolder/moxie/pkg/s3client"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -30,6 +31,7 @@ type Service struct {
 	orders    db.Repository[models.Order]
 	merchants db.Repository[models.Merchant]
 	authCfg   AuthConfig
+	s3        *s3client.Client
 }
 
 type NewServiceParams struct {
@@ -38,6 +40,7 @@ type NewServiceParams struct {
 	GormDB *gorm.DB
 	RPC    string
 	Auth   AuthConfig
+	S3     *s3client.Client
 }
 
 func New(params NewServiceParams) *Service {
@@ -49,7 +52,19 @@ func New(params NewServiceParams) *Service {
 		panic("invalid service.New arguments: gorm db is nil")
 	}
 
-	rpcClient := rpc.New(rpc.DevNet_RPC)
+	if params.HTTP == nil {
+		panic("invalid service.New arguments: http client is nil")
+	}
+
+	if params.S3 == nil {
+		panic("invalid service.New arguments: s3 client is nil")
+	}
+
+	if params.RPC == "" {
+		params.RPC = rpc.DevNet_RPC
+	}
+
+	rpcClient := rpc.New(params.RPC)
 	ordersRepository := db.NewGormRepository[models.Order](params.GormDB)
 	merchantsRepository := db.NewGormRepository[models.Merchant](params.GormDB)
 	return &Service{
@@ -60,6 +75,7 @@ func New(params NewServiceParams) *Service {
 		merchants: merchantsRepository,
 		rpc:       rpcClient,
 		authCfg:   params.Auth,
+		s3:        params.S3,
 	}
 }
 

@@ -8,6 +8,10 @@ services:
       - DATABASE_URL=postgres://moxie_owner:passwd@postgres:5432/moxie?sslmode=disable
       - JWT_SECRET=${JWT_SECRET}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - S3_ACCESS_KEY_ID=${S3_ACCESS_KEY_ID}
+      - S3_SECRET_ACCESS_KEY=${S3_SECRET_ACCESS_KEY}
+      - S3_ENDPOINT=http://garage:3900
+      - AWS_REQUEST_CHECKSUM_CALCULATION=false
     depends_on:
       postgres:
         condition: service_healthy
@@ -55,6 +59,36 @@ services:
     networks:
       - moxie-net
 
+  garage:
+    image: dxflrs/garage:v2.0.0
+    ports:
+      - "3900:3900" # S3 API
+      - "3901:3901" # RPC
+      - "3902:3902" # Web (static sites)
+      - "3903:3903" # Admin API
+    volumes:
+      - ./garage.toml:/etc/garage.toml
+      - garage_meta:/var/lib/garage/meta
+      - garage_data:/var/lib/garage/data
+    environment:
+      - GARAGE_CONFIG_FILE=/etc/garage.toml
+    networks:
+      - moxie-net
+
+  garage-webui:
+    image: khairul169/garage-webui:latest
+    container_name: garage-webui
+    restart: unless-stopped
+    volumes:
+      - ./garage.toml:/etc/garage.toml:ro
+    ports:
+      - 3909:3909
+    environment:
+      API_BASE_URL: "http://garage:3903"
+      S3_ENDPOINT_URL: "http://garage:3900"
+    networks:
+      - moxie-net
+
   postgres:
     image: postgres:17-alpine
     environment:
@@ -96,6 +130,18 @@ volumes:
       type: none
       o: bind
       device: ./volumes/pgadmin_data
+  garage_meta:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volumes/garage_meta
+  garage_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./volumes/garage_data
 
 networks:
   moxie-net:

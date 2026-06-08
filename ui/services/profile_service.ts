@@ -5,7 +5,6 @@ import { api } from '@/lib/api'
 export interface UpdateProfileRequest {
   username?: string | null
   address?: string | null
-  avatar_url?: string | null
   webhook_url?: string | null
   helius_api_key?: string | null
 }
@@ -17,6 +16,18 @@ export interface ChangePasswordRequest {
 
 export const updateProfile = async (data: UpdateProfileRequest): Promise<Merchant> => {
   return api.put<Merchant>('/profile/update', data)
+}
+
+export const updateProfilePicture = async (file: File): Promise<{ url: string }> => {
+  const formData = new FormData()
+
+  formData.append('file', file)
+
+  return api.upload<{ url: string }>('/profile/update-picture', formData)
+}
+
+export const deleteProfilePicture = async (): Promise<void> => {
+  await api.raw('/profile/delete-picture', { method: 'DELETE' })
 }
 
 export const changePassword = async (data: ChangePasswordRequest): Promise<void> => {

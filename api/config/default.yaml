@@ -14,7 +14,10 @@ workers:
   order_expiration: 24h
 
 auth:
-  jwt_secret: super-secret-key-change-in-production
   access_token_ttl: 15m
   refresh_token_ttl: 720h
-  encryption_key: change-me-to-a-secure-encryption-key
+
+s3:
+  bucket: eu-west-1
+  region: garage
+  endpoint: http://localhost:3900

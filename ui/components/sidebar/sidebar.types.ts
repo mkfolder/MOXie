@@ -9,4 +9,5 @@ export interface NavLink {
 export interface SidebarUser {
   username: string
   email: string
+  picture_url?: string | null
 }

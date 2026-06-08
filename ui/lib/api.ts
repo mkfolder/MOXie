@@ -10,13 +10,22 @@ export class ApiError extends Error {
   }
 }
 
+function buildRequestInit(options?: RequestInit): RequestInit {
+  const is_form_data = options?.body instanceof FormData
+
+  return {
+    credentials: 'include',
+    ...options,
+    headers: is_form_data
+      ? (options?.headers as Record<string, string>)
+      : { 'Content-Type': 'application/json', ...(options?.headers as Record<string, string>) },
+  }
+}
+
 async function request(path: string, options?: RequestInit): Promise<Response> {
   const url = `${API_BASE}${path}`
-  const res = await fetch(url, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    ...options,
-  })
+  let init = buildRequestInit(options)
+  let res = await fetch(url, init)
 
   if (res.status !== 401) return res
 
@@ -29,13 +38,10 @@ async function request(path: string, options?: RequestInit): Promise<Response> {
     throw new ApiError('Unauthorized', 401)
   }
 
-  const retryRes = await fetch(url, {
-    credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    ...options,
-  })
+  init = buildRequestInit(options)
+  res = await fetch(url, init)
 
-  return retryRes
+  return res
 }
 
 async function handleResponse<T>(res: Response): Promise<T> {
@@ -65,6 +71,13 @@ export const api = {
     return request(path, {
       method: 'PUT',
       body: body ? JSON.stringify(body) : undefined,
+    }).then(handleResponse<T>)
+  },
+
+  upload<T>(path: string, formData: FormData): Promise<T> {
+    return request(path, {
+      method: 'PUT',
+      body: formData,
     }).then(handleResponse<T>)
   },
 

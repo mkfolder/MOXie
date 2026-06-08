@@ -5,14 +5,13 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
-	"github.com/mkfolder/moxie/internal/service"
 	"github.com/mkfolder/moxie/internal/common"
+	"github.com/mkfolder/moxie/internal/service"
 )
 
 type UpdateProfileRequest struct {
 	Username     *string `json:"username"`
 	Address      *string `json:"address"`
-	AvatarURL    *string `json:"avatar_url"`
 	WebhookURL   *string `json:"webhook_url"`
 	HeliusAPIKey *string `json:"helius_api_key"`
 }
@@ -28,7 +27,6 @@ func (h *Handler) UpdateProfile(c fiber.Ctx) error {
 	svcReq := &service.UpdateProfileRequest{
 		Username:     body.Username,
 		Address:      body.Address,
-		AvatarURL:    body.AvatarURL,
 		WebhookURL:   body.WebhookURL,
 		HeliusAPIKey: body.HeliusAPIKey,
 	}
@@ -79,4 +77,37 @@ func (h *Handler) GetHeliusKey(c fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"helius_api_key": key})
+}
+
+func (h *Handler) UpdatePicture(c fiber.Ctx) error {
+	merchantID := c.Locals("merchant_id").(uuid.UUID)
+
+	fileHeader, err := c.FormFile("file")
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, "file is required")
+	}
+
+	file, err := fileHeader.Open()
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "failed to open file")
+	}
+	defer file.Close()
+
+	url, err := h.s.UpdatePicture(c.Context(), merchantID, file)
+	if err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "failed to upload file")
+	}
+
+	return c.JSON(fiber.Map{
+		"url": url,
+	})
+}
+
+func (h *Handler) DeletePicture(c fiber.Ctx) error {
+	merchantID := c.Locals("merchant_id").(uuid.UUID)
+	if err := h.s.DeletePicture(c.Context(), merchantID); err != nil {
+		return fiber.NewError(fiber.StatusInternalServerError, "failed to delete picture")
+	}
+
+	return c.JSON(fiber.Map{"message": "picture deleted successfully"})
 }

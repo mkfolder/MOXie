@@ -18,7 +18,7 @@ export const useSidebar = () => {
   const { merchant, logout } = useAuth()
 
   const user: SidebarUser = merchant
-    ? { username: merchant.email.split('@')[0], email: merchant.email }
+    ? { username: merchant.email.split('@')[0], email: merchant.email, picture_url: merchant.picture_url }
     : { username: '', email: '' }
 
   return {

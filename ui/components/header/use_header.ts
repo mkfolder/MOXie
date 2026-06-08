@@ -51,6 +51,7 @@ export const useHeader = () => {
     subtitle: subtitles[pathname] ?? 'Welcome',
     balances,
     email: merchant?.email ?? '',
+    picture_url: merchant?.picture_url ?? null,
     api_status: is_authenticated ? computeApiStatus(merchant) : null,
   }
 }

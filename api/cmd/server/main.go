@@ -18,6 +18,7 @@ import (
 	"github.com/mkfolder/moxie/internal/service"
 	"github.com/mkfolder/moxie/internal/workers"
 	"github.com/mkfolder/moxie/pkg/http"
+	"github.com/mkfolder/moxie/pkg/s3client"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -81,6 +82,22 @@ func main() {
 
 	httpClient := http.New(nil, nil, cfg.HTTP.Timeout)
 
+	var endpoint *string
+	if cfg.S3.Endpoint != "" {
+		endpoint = &cfg.S3.Endpoint
+	}
+
+	s3, err := s3client.New(s3client.Config{
+		Bucket:          cfg.S3.Bucket,
+		Region:          cfg.S3.Region,
+		AccessKeyID:     cfg.S3.AccessKeyID,
+		SecretAccessKey: cfg.S3.SecretAccessKey,
+		Endpoint:        endpoint,
+	})
+	if err != nil {
+		panic(err)
+	}
+
 	params := service.NewServiceParams{
 		Log:    log,
 		HTTP:   httpClient,
@@ -92,6 +109,7 @@ func main() {
 			RefreshTokenTTL: cfg.Auth.RefreshTokenTTL,
 			EncryptionKey:   cfg.Auth.EncryptionKey,
 		},
+		S3: s3,
 	}
 
 	s := service.New(params)

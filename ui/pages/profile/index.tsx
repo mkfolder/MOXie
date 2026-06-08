@@ -22,7 +22,6 @@ interface FieldState {
 interface UpdateProfilePayload {
   username?: string | null
   address?: string | null
-  avatar_url?: string | null
   webhook_url?: string | null
   helius_api_key?: string | null
 }
@@ -46,8 +45,7 @@ const ProfilePage = () => {
 
   /* profile fields */
   const [username, setUsername] = useState<FieldState>(freshField(''))
-  const [avatar_url, setAvatarUrl] = useState<FieldState>(freshField(''))
-  const [avatar_err, setAvatarErr] = useState(false)
+  const [picture_url, setPictureUrl] = useState<string | null>(null)
   const [show_avatar_modal, setShowAvatarModal] = useState(false)
 
   /* password */
@@ -70,11 +68,7 @@ const ProfilePage = () => {
   useEffect(() => {
     if (!merchant) return
     setUsername(p => ({ ...freshField(merchant.username ?? ''), success: p.success }))
-    setAvatarUrl(p => ({
-      ...freshField(merchant.avatar_url ?? ''),
-      success: p.success,
-      value: merchant.avatar_url ?? '',
-    }))
+    setPictureUrl(merchant.picture_url ?? null)
     setAddress(p => ({ ...freshField(merchant.address ?? ''), success: p.success }))
     setWebhookUrl(p => ({ ...freshField(merchant.webhook_url ?? ''), success: p.success }))
   }, [merchant])
@@ -131,21 +125,8 @@ const ProfilePage = () => {
   }
 
   const handleAvatarSave = async (url: string) => {
-    if (url !== avatar_url.original) {
-      const updated = await updateProfile({ avatar_url: url || null })
-
-      setAvatarUrl(p => ({
-        ...p,
-        value: updated.avatar_url ?? '',
-        original: updated.avatar_url ?? '',
-        is_dirty: false,
-        is_saving: false,
-        error: null,
-        success: true,
-      }))
-      void refreshMerchant()
-      setTimeout(() => setAvatarUrl(p => ({ ...p, success: false })), 2500)
-    }
+    setPictureUrl(url || null)
+    void refreshMerchant()
   }
 
   const doPassword = async () => {
@@ -283,12 +264,11 @@ const ProfilePage = () => {
                   <p className="mb-1.5 block text-xs font-medium tracking-wide text-white/50 uppercase">Avatar</p>
                   <div className="group relative inline-block">
                     <button className="cursor-pointer" type="button" onClick={() => setShowAvatarModal(true)}>
-                      {avatar_url.value && !avatar_err ? (
+                      {picture_url ? (
                         <img
                           alt=""
                           className="h-20 w-20 rounded-full border border-white/10 object-cover"
-                          src={avatar_url.value}
-                          onError={() => setAvatarErr(true)}
+                          src={`${picture_url}?view=1`}
                         />
                       ) : (
                         <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-base font-bold text-white">
@@ -318,13 +298,12 @@ const ProfilePage = () => {
                   </label>
                   <div className="flex items-center gap-2">
                     <input
-                      className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
-                        username.success
-                          ? 'border-success/50'
-                          : username.error
-                            ? 'border-danger'
-                            : 'focus:border-accent/50 border-white/10'
-                      }`}
+                      className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${username.success
+                        ? 'border-success/50'
+                        : username.error
+                          ? 'border-danger'
+                          : 'focus:border-accent/50 border-white/10'
+                        }`}
                       id="username"
                       placeholder="Your username"
                       value={username.value}
@@ -420,13 +399,12 @@ const ProfilePage = () => {
                 </label>
                 <div className="flex items-center gap-2">
                   <input
-                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
-                      address.success
-                        ? 'border-success/50'
-                        : address.error
-                          ? 'border-danger'
-                          : 'focus:border-accent/50 border-white/10'
-                    }`}
+                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${address.success
+                      ? 'border-success/50'
+                      : address.error
+                        ? 'border-danger'
+                        : 'focus:border-accent/50 border-white/10'
+                      }`}
                     id="address"
                     placeholder="Your Solana wallet address"
                     value={address.value}
@@ -450,13 +428,12 @@ const ProfilePage = () => {
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
                     <input
-                      className={`h-10 w-full rounded-xl border bg-white/[0.03] px-3.5 pr-9 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
-                        helius_api_key.success
-                          ? 'border-success/50'
-                          : helius_api_key.error
-                            ? 'border-danger'
-                            : 'focus:border-accent/50 border-white/10'
-                      }`}
+                      className={`h-10 w-full rounded-xl border bg-white/[0.03] px-3.5 pr-9 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${helius_api_key.success
+                        ? 'border-success/50'
+                        : helius_api_key.error
+                          ? 'border-danger'
+                          : 'focus:border-accent/50 border-white/10'
+                        }`}
                       id="helius"
                       placeholder="Enter your Helius API key"
                       type={show_helius ? 'text' : 'password'}
@@ -488,13 +465,12 @@ const ProfilePage = () => {
                 </label>
                 <div className="flex items-center gap-2">
                   <input
-                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
-                      webhook_url.success
-                        ? 'border-success/50'
-                        : webhook_url.error
-                          ? 'border-danger'
-                          : 'focus:border-accent/50 border-white/10'
-                    }`}
+                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${webhook_url.success
+                      ? 'border-success/50'
+                      : webhook_url.error
+                        ? 'border-danger'
+                        : 'focus:border-accent/50 border-white/10'
+                      }`}
                     id="webhook"
                     placeholder="https://your-server.com/webhook"
                     value={webhook_url.value}
@@ -511,7 +487,7 @@ const ProfilePage = () => {
       </DefaultLayout>
 
       <AvatarUpload
-        initialUrl={avatar_url.value}
+        initialUrl={picture_url ? `${picture_url}?view=1` : ''}
         isOpen={show_avatar_modal}
         username={username.value || merchant?.username || '?'}
         onOpenChange={setShowAvatarModal}

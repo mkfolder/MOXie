@@ -17,12 +17,18 @@ type Config struct {
 	HTTP     HTTP     `yaml:"http"`
 	Workers  Workers  `yaml:"workers"`
 	Auth     Auth     `yaml:"auth"`
+	S3       S3       `yaml:"s3"`
 }
 
 type Server struct {
 	Environment common.Environment `yaml:"environment" env:"ENVIRONMENT"`
 	Port        string             `yaml:"port" env:"SERVER_PORT"`
 	WebhookURL  string             `yaml:"webhook_url" env:"WEBHOOK_URL"`
+}
+
+type Workers struct {
+	CleanerInterval time.Duration `yaml:"cleaner_interval" env:"CLEANER_INTERVAL"`
+	OrderExpiration time.Duration `yaml:"order_expiration" env:"ORDER_EXPIRATION"`
 }
 
 type Postgres struct {
@@ -33,9 +39,12 @@ type HTTP struct {
 	Timeout time.Duration `yaml:"timeout" env:"HTTP_TIMEOUT"`
 }
 
-type Workers struct {
-	CleanerInterval time.Duration `yaml:"cleaner_interval" env:"CLEANER_INTERVAL"`
-	OrderExpiration time.Duration `yaml:"order_expiration" env:"ORDER_EXPIRATION"`
+type S3 struct {
+	Bucket          string `yaml:"bucket" env:"S3_BUCKET"`
+	Region          string `yaml:"region" env:"S3_REGION"`
+	AccessKeyID     string `yaml:"access_key_id" env:"S3_ACCESS_KEY_ID"`
+	SecretAccessKey string `yaml:"secret_access_key" env:"S3_SECRET_ACCESS_KEY"`
+	Endpoint        string `yaml:"endpoint" env:"S3_ENDPOINT"`
 }
 
 type Auth struct {
@@ -94,6 +103,22 @@ func New(path string) (*Config, error) {
 
 	if config.Auth.EncryptionKey == "" {
 		return nil, errors.New("invalid encryption key")
+	}
+
+	if config.S3.Bucket == "" {
+		return nil, errors.New("invalid s3 bucket")
+	}
+
+	if config.S3.Region == "" {
+		return nil, errors.New("invalid s3 region")
+	}
+
+	if config.S3.AccessKeyID == "" {
+		return nil, errors.New("invalid s3 access key id")
+	}
+
+	if config.S3.SecretAccessKey == "" {
+		return nil, errors.New("invalid s3 secret access key")
 	}
 
 	return &config, nil

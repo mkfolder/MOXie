@@ -23,6 +23,8 @@ func Setup(r fiber.Router, h *handler.Handler) {
 
 	profile := protected.Group("/profile")
 	profile.Put("/update", h.UpdateProfile)
+	profile.Put("/update-picture", h.UpdatePicture)
+	profile.Delete("/delete-picture", h.DeletePicture)
 	profile.Put("/password", h.ChangePassword)
 	profile.Get("/helius-key", h.GetHeliusKey)
 

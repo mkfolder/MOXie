@@ -56,9 +56,13 @@ export const Sidebar = () => {
           className="hover:bg-surface mb-4 flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors"
           href="/profile"
         >
-          <Avatar color="accent" size="sm">
-            <Avatar.Fallback>{user.username.charAt(0).toUpperCase()}</Avatar.Fallback>
-          </Avatar>
+          {user.picture_url ? (
+            <img alt="" className="h-8 w-8 rounded-full object-cover" src={`${user.picture_url}?view=1`} />
+          ) : (
+            <Avatar color="accent" size="sm">
+              <Avatar.Fallback>{user.username.charAt(0).toUpperCase()}</Avatar.Fallback>
+            </Avatar>
+          )}
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{user.username}</p>
             <p className="text-muted truncate text-xs">{user.email}</p>
