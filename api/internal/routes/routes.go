@@ -8,6 +8,7 @@ import (
 
 func Setup(r fiber.Router, h *handler.Handler) {
 	r.Get("/health", h.Health)
+	r.Post("/service/orders/create", h.CreateOrder)
 
 	auth := r.Group("/auth")
 	auth.Post("/login", h.AuthMerchant)
@@ -31,7 +32,6 @@ func Setup(r fiber.Router, h *handler.Handler) {
 	orders := protected.Group("/orders")
 	orders.Get("/find-all", h.FindAll)
 	orders.Get("/find/:id", h.FindOrder)
-	orders.Post("/create", h.CreateOrder)
 
 	solpay := protected.Group("/solpay")
 	solpay.Get("/:id", h.GetSolPayMetadata)

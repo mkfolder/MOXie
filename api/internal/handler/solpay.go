@@ -3,11 +3,11 @@ package handler
 import (
 	"encoding/base64"
 	"fmt"
+	"os"
 
 	"github.com/gagliardetto/solana-go"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
-	"github.com/mkfolder/moxie/internal/constants"
 )
 
 type SolPayMetadata struct {
@@ -25,7 +25,11 @@ type BuildSolPayTransactionRequest struct {
 }
 
 func (h *Handler) GetSolPayMetadata(c fiber.Ctx) error {
-	icon := fmt.Sprintf("https://%s/public/icon.png", constants.Domain)
+	domain := os.Getenv("DOMAIN")
+	if domain == "" {
+		domain = "moxify.cc"
+	}
+	icon := fmt.Sprintf("https://%s/public/icon.png", domain)
 	return c.JSON(SolPayMetadata{
 		Label: "MOXie Payment Processor",
 		Icon:  icon,

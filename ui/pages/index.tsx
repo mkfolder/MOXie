@@ -13,7 +13,6 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
-
 import { useRouter } from 'next/router'
 
 import DefaultLayout from '@/layouts/default'

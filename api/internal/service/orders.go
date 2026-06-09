@@ -9,10 +9,20 @@ import (
 	"github.com/mkfolder/moxie/internal/models"
 )
 
-func (s *Service) FindAll(ctx context.Context, merchantID uuid.UUID) ([]models.Order, error) {
+func (s *Service) FindAll(ctx context.Context, merchantID uuid.UUID, limit, offset int) ([]models.Order, int64, error) {
+	var total int64
+	if err := s.db.WithContext(ctx).Model(&models.Order{}).Where("merchant_id = ?", merchantID).Count(&total).Error; err != nil {
+		return nil, 0, fmt.Errorf("failed to count orders: %w", err)
+	}
+
 	var orders []models.Order
-	if err := s.db.WithContext(ctx).Where("merchant_id = ?", merchantID).Find(&orders).Error; err != nil {
-		return nil, fmt.Errorf("failed to find all orders: %w", err)
+	err := s.db.WithContext(ctx).
+		Where("merchant_id = ?", merchantID).
+		Order("created_at DESC").
+		Limit(limit).Offset(offset).
+		Find(&orders).Error
+	if err != nil {
+		return nil, 0, fmt.Errorf("failed to find all orders: %w", err)
 	}
 
 	for idx := range orders {
@@ -20,11 +30,10 @@ func (s *Service) FindAll(ctx context.Context, merchantID uuid.UUID) ([]models.O
 		if orders[idx].Merchant.Address != nil {
 			address = *orders[idx].Merchant.Address
 		}
-
 		orders[idx].Address = address
 	}
 
-	return orders, nil
+	return orders, total, nil
 }
 
 func (s *Service) FindOrder(ctx context.Context, orderID uuid.UUID) (*models.Order, error) {

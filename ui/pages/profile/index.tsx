@@ -298,12 +298,13 @@ const ProfilePage = () => {
                   </label>
                   <div className="flex items-center gap-2">
                     <input
-                      className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${username.success
-                        ? 'border-success/50'
-                        : username.error
-                          ? 'border-danger'
-                          : 'focus:border-accent/50 border-white/10'
-                        }`}
+                      className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
+                        username.success
+                          ? 'border-success/50'
+                          : username.error
+                            ? 'border-danger'
+                            : 'focus:border-accent/50 border-white/10'
+                      }`}
                       id="username"
                       placeholder="Your username"
                       value={username.value}
@@ -399,12 +400,13 @@ const ProfilePage = () => {
                 </label>
                 <div className="flex items-center gap-2">
                   <input
-                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${address.success
-                      ? 'border-success/50'
-                      : address.error
-                        ? 'border-danger'
-                        : 'focus:border-accent/50 border-white/10'
-                      }`}
+                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
+                      address.success
+                        ? 'border-success/50'
+                        : address.error
+                          ? 'border-danger'
+                          : 'focus:border-accent/50 border-white/10'
+                    }`}
                     id="address"
                     placeholder="Your Solana wallet address"
                     value={address.value}
@@ -428,12 +430,13 @@ const ProfilePage = () => {
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
                     <input
-                      className={`h-10 w-full rounded-xl border bg-white/[0.03] px-3.5 pr-9 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${helius_api_key.success
-                        ? 'border-success/50'
-                        : helius_api_key.error
-                          ? 'border-danger'
-                          : 'focus:border-accent/50 border-white/10'
-                        }`}
+                      className={`h-10 w-full rounded-xl border bg-white/[0.03] px-3.5 pr-9 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
+                        helius_api_key.success
+                          ? 'border-success/50'
+                          : helius_api_key.error
+                            ? 'border-danger'
+                            : 'focus:border-accent/50 border-white/10'
+                      }`}
                       id="helius"
                       placeholder="Enter your Helius API key"
                       type={show_helius ? 'text' : 'password'}
@@ -465,12 +468,13 @@ const ProfilePage = () => {
                 </label>
                 <div className="flex items-center gap-2">
                   <input
-                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${webhook_url.success
-                      ? 'border-success/50'
-                      : webhook_url.error
-                        ? 'border-danger'
-                        : 'focus:border-accent/50 border-white/10'
-                      }`}
+                    className={`h-10 flex-1 rounded-xl border bg-white/[0.03] px-3.5 text-sm transition-all outline-none placeholder:text-white/25 focus:bg-white/[0.06] ${
+                      webhook_url.success
+                        ? 'border-success/50'
+                        : webhook_url.error
+                          ? 'border-danger'
+                          : 'focus:border-accent/50 border-white/10'
+                    }`}
                     id="webhook"
                     placeholder="https://your-server.com/webhook"
                     value={webhook_url.value}

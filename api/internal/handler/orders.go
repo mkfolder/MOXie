@@ -3,19 +3,56 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"strconv"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
-	"github.com/mkfolder/moxie/internal/constants"
+	"github.com/mkfolder/moxie/internal/models"
 )
+
+type OrderWithQRCode struct {
+	models.Order
+	QRCode string `json:"qrcode_data"`
+}
 
 func (h *Handler) FindAll(c fiber.Ctx) error {
 	merchantID := c.Locals("merchant_id").(uuid.UUID)
-	orders, err := h.s.FindAll(c.Context(), merchantID)
+
+	limit := 20
+	offset := 0
+
+	if l := c.Query("limit"); l != "" {
+		if parsed, err := strconv.Atoi(l); err == nil && parsed > 0 && parsed <= 100 {
+			limit = parsed
+		}
+	}
+
+	if o := c.Query("offset"); o != "" {
+		if parsed, err := strconv.Atoi(o); err == nil && parsed >= 0 {
+			offset = parsed
+		}
+	}
+
+	orders, total, err := h.s.FindAll(c.Context(), merchantID, limit, offset)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.JSON(orders)
+
+	var ordersWithQRCode []OrderWithQRCode
+	for _, order := range orders {
+		ordersWithQRCode = append(ordersWithQRCode, OrderWithQRCode{
+			Order:  order,
+			QRCode: getQRCode(order.ID),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"data":   ordersWithQRCode,
+		"total":  total,
+		"limit":  limit,
+		"offset": offset,
+	})
 }
 
 func (h *Handler) FindOrder(c fiber.Ctx) error {
@@ -59,6 +96,14 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"order":       order,
-		"qrcode_data": fmt.Sprintf("solana:https://%s/solpay/%s", constants.Subdomain, order.ID.String()),
+		"qrcode_data": getQRCode(order.ID),
 	})
+}
+
+func getQRCode(orderID uuid.UUID) string {
+	subdomain := os.Getenv("SUBDOMAIN")
+	if subdomain == "" {
+		subdomain = "api.moxify.cc"
+	}
+	return fmt.Sprintf("solana:https://%s/solpay/%s", subdomain, orderID.String())
 }
