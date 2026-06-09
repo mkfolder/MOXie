@@ -1,4 +1,4 @@
-{$CADDY_HOST} {
+:{$CADDY_PORT} {
   handle /api/* {
     reverse_proxy {$API_HOST}
   }

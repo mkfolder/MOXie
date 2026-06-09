@@ -55,7 +55,7 @@ services:
       ui:
         condition: service_started
     environment:
-      - CADDY_HOST=http://localhost
+      - CADDY_PORT=80
       - API_HOST=api:7654
       - UI_HOST=ui:4321
     networks:
