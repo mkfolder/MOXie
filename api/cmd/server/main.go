@@ -31,7 +31,11 @@ const (
 )
 
 // todo!: should be configured via config
-var allowedOrigins = []string{"http://localhost:4321", "http://localhost"}
+var allowedOrigins = []string{
+	"http://localhost:4321",
+	"http://localhost",
+	"https://moxie-ui.fly.dev",
+}
 
 func main() {
 	// Config init
