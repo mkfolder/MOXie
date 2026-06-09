@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://api.localhost'
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://moxie-bhwong.fly.dev'
 
 export class ApiError extends Error {
   status: number
