@@ -103,7 +103,7 @@ moxie/
 │   └── layouts/                 # Page layouts
 │
 ├── caddy/                        # Caddy reverse proxy
-│   ├── Caddyfile                 # Routes: localhost → UI, api.localhost → API
+│   ├── Caddyfile                 # Routes: /api/* → API, everything else → UI
 │   └── Dockerfile
 │
 ├── docker-compose.yaml          # API + UI + PostgreSQL + pgAdmin + Caddy
@@ -165,7 +165,7 @@ This spins up five services:
 Caddy acts as the single entry point:
 
 - [`http://localhost`](http://localhost) → UI
-- [`http://api.localhost`](http://api.localhost) → API
+- [`http://localhost/api`](http://localhost/api) → API
 
 ### Configuration
 

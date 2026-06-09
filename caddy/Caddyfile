@@ -1,7 +1,8 @@
-http://localhost {
-    reverse_proxy ui:4321
-}
-
-http://api.localhost {
-    reverse_proxy api:7654
+{$CADDY_HOST} {
+  handle /api/* {
+    reverse_proxy {$API_HOST}
+  }
+  handle {
+    reverse_proxy {$UI_HOST}
+  }
 }

@@ -8,6 +8,10 @@ const nextConfig = {
         source: '/public/icon.png',
         destination: '/icon.png',
       },
+      {
+        source: '/api/:path*',
+        destination: `${process.env.API_URL ?? 'http://api:7654'}/api/:path*`,
+      },
     ]
   },
 }

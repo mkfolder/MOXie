@@ -101,9 +101,9 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 }
 
 func getQRCode(orderID uuid.UUID) string {
-	subdomain := os.Getenv("SUBDOMAIN")
-	if subdomain == "" {
-		subdomain = "api.moxify.cc"
+	domain := os.Getenv("DOMAIN")
+	if domain == "" {
+		domain = "moxify.cc"
 	}
-	return fmt.Sprintf("solana:https://%s/solpay/%s", subdomain, orderID.String())
+	return fmt.Sprintf("solana:https://%s/api/solpay/%s", domain, orderID.String())
 }

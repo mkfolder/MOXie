@@ -7,10 +7,12 @@ import (
 )
 
 func Setup(r fiber.Router, h *handler.Handler) {
-	r.Get("/health", h.Health)
-	r.Post("/service/orders/create", h.CreateOrder)
+	api := r.Group("/api")
 
-	auth := r.Group("/auth")
+	api.Get("/health", h.Health)
+	api.Post("/service/orders/create", h.CreateOrder)
+
+	auth := api.Group("/auth")
 	auth.Post("/login", h.AuthMerchant)
 	auth.Post("/register", h.RegisterMerchant)
 	auth.Post("/refresh", h.RefreshMerchant)
@@ -18,7 +20,7 @@ func Setup(r fiber.Router, h *handler.Handler) {
 	auth.Post("/2fa/setup", h.SetupTwoFactor)
 	auth.Post("/2fa/verify", h.VerifyTwoFactor)
 
-	protected := r.Group("", middleware.AuthRequired(h.AuthCfg().JWTSecret))
+	protected := api.Group("", middleware.AuthRequired(h.AuthCfg().JWTSecret))
 
 	protected.Get("/auth/me", h.Me)
 
@@ -37,6 +39,6 @@ func Setup(r fiber.Router, h *handler.Handler) {
 	solpay.Get("/:id", h.GetSolPayMetadata)
 	solpay.Post("/:id", h.BuildSolPayTransaction)
 
-	webhook := r.Group("/helius-webhook")
+	webhook := api.Group("/helius-webhook")
 	webhook.Post("/handle", h.HeliusWebhook)
 }
