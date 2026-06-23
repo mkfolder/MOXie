@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/gagliardetto/solana-go"
 	"github.com/google/uuid"
 	"github.com/mkfolder/moxie/internal/helius"
 	"github.com/mkfolder/moxie/internal/models"
@@ -19,7 +20,7 @@ func (s *Service) HandleWebhook(ctx context.Context, transacitons []helius.Trans
 
 func (s *Service) processTransaction(tx *helius.Transaction) {
 	for _, instruction := range tx.Instructions {
-		if instruction.ProgramID != memoProgramID {
+		if instruction.ProgramID != solana.MemoProgramID.String() {
 			continue
 		}
 

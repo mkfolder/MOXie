@@ -14,8 +14,6 @@ import (
 	"gorm.io/gorm"
 )
 
-const memoProgramID = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"
-
 type AuthConfig struct {
 	JWTSecret       string
 	AccessTokenTTL  time.Duration

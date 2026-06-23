@@ -1,7 +1,7 @@
 server:
   environment: development
   port: 7654
-  webhook_url: https://moxify.cc/api/helius-webhook/handle
+  webhook_url: https://moxie.mkfolder.dev/api/helius-webhook/handle
 
 postgres:
   dsn: postgres://moxie_owner:passwd@postgres:5432/moxie?sslmode=require

@@ -8,6 +8,7 @@ import (
 	"github.com/gagliardetto/solana-go"
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
+	"github.com/mkfolder/moxie/internal/constants"
 )
 
 type SolPayMetadata struct {
@@ -27,7 +28,7 @@ type BuildSolPayTransactionRequest struct {
 func (h *Handler) GetSolPayMetadata(c fiber.Ctx) error {
 	domain := os.Getenv("DOMAIN")
 	if domain == "" {
-		domain = "moxify.cc"
+		domain = constants.DomainFallback
 	}
 	icon := fmt.Sprintf("https://%s/public/icon.png", domain)
 	return c.JSON(SolPayMetadata{

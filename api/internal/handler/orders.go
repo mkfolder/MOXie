@@ -8,6 +8,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
+	"github.com/mkfolder/moxie/internal/constants"
 	"github.com/mkfolder/moxie/internal/models"
 )
 
@@ -103,7 +104,7 @@ func (h *Handler) CreateOrder(c fiber.Ctx) error {
 func getQRCode(orderID uuid.UUID) string {
 	domain := os.Getenv("DOMAIN")
 	if domain == "" {
-		domain = "moxify.cc"
+		domain = constants.DomainFallback
 	}
 	return fmt.Sprintf("solana:https://%s/api/solpay/%s", domain, orderID.String())
 }

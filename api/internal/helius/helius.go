@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/url"
 
+	"github.com/mkfolder/moxie/internal/constants"
 	"github.com/mkfolder/moxie/pkg/http"
 )
 
@@ -25,9 +26,9 @@ type HeliusClient struct {
 }
 
 func NewClient(http *http.Client, webhookURL, apiKey string, net HeliusNet) *HeliusClient {
-	domain := "api-mainnet.helius-rpc.com"
+	domain := constants.HeliusMainnetURL
 	if net == HeliusNetDevnet {
-		domain = "api-devnet.helius-rpc.com"
+		domain = constants.HeliusDevnetURL
 	}
 
 	webhook, err := url.Parse(webhookURL)

@@ -35,7 +35,7 @@ var allowedOrigins = []string{
 	"http://localhost:4321",
 	"http://localhost:7654",
 	"http://localhost",
-	"https://moxify.cc",
+	"https://moxie.mkfolder.dev",
 }
 
 func main() {
